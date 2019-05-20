@@ -1,0 +1,18 @@
+citHeader("To cite SPO in publications use:")
+
+citEntry(entry="inproceedings",
+  title = "Sequential Parameter Optimization",
+  author = personList(person(family="Bartz-Beielstein", given="Thomas"),
+                      person(family="Lasarczyk",given="Christian"),
+	                    person(family="Preuss", given="Mike")),
+  booktitle = "Proceedings Congress  on  Evolutionary Computation 2005 (CEC'05)",
+  year = "2005",
+  address = "Edinburgh, Scotland",
+  pages ={773--780},
+  url = "http://www.spotseven.de/wp-content/papercite-data/pdf/blp05.pdf",
+  textVersion = paste("Bartz-Beielstein, T., Lasarczyk, C. , & Preuss, M. ", 
+         "Sequential Parameter Optimization. ",
+         "In 2005 IEEE congress on evolutionary computation, IEEE Press ",
+         sep="")
+)
+

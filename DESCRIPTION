@@ -1,0 +1,45 @@
+Package: SPOT
+License: GPL (>=2)
+Title: Sequential Parameter Optimization Toolbox
+Type: Package
+LazyLoad: yes
+LazyData: true
+Authors@R: c(	
+	      person("Thomas", "Bartz-Beielstein", role = "aut"),
+				person("Joerg", "Stork", role = "aut"),
+				person("Martin", "Zaefferer", role = c("aut", "cre"),email = "martin.zaefferer@gmx.de"),
+	      person("Margarita", "Rebolledo", role = "ctb"),
+	      person("Christian", "Lasarczyk", role = "ctb"),
+				person("Joerg", "Ziegenhirt", role = "ctb"),
+				person("Wolfgang","Konen",role = "ctb"),
+				person("Oliver","Flasch", role = "ctb"),
+				person("Patrick","Koch", role = "ctb"),
+				person("Martina","Friese", role = "ctb"),
+				person("Lorenzo","Gentile", role = "ctb"),
+				person("Frederik","Rehbach", role = "aut")
+				)
+Description: A set of tools for model based optimization and tuning of
+    algorithms. It includes surrogate models, optimizers and design of experiment
+    approaches. The main interface is spot, which uses sequentially updated
+    surrogate models for the purpose of efficient optimization. The main goal is
+    to ease the burden of objective function evaluations, when a single evaluation
+    requires a significant amount of resources.
+Version: 2.0.4
+Date: 2019-05-17
+Depends:
+    R (>= 3.0.0)
+Imports:
+    randomForest,
+    stats,
+    utils,
+    graphics,
+    grDevices,
+    MASS,
+    DEoptim,
+    rgenoud,
+		plotly,
+		rsm,
+		nloptr
+RoxygenNote: 6.1.1
+Suggests:
+    testthat
