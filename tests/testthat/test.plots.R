@@ -18,6 +18,18 @@ test_that("check plots are generated without errors", {
     cvMod$target <- c("y","sLinear")
     expect_error(plotModel(cvMod, type = "singleDim"), NA)
     
+    cvMod <- suppressWarnings(buildCVModel(x,y,buildRandomForest))
+    cvMod$target <- c("y","sLinear")
+    expect_error(plotModel(cvMod, type = "singleDim"), NA)
+    
+    cvMod <- buildCVModel(x,y,buildLM)
+    cvMod$target <- c("y","sLinear")
+    expect_error(plotModel(cvMod, type = "singleDim"), NA)
+    
+    cvMod <- buildCVModel(x,y,buildRSM)
+    cvMod$target <- c("y","sLinear")
+    expect_error(plotModel(cvMod, type = "singleDim"), NA)
+    
     ## This should fail saying only 2 dimensional models can be plotted like that
     expect_error(plotModel(krig),"The specified plot type is only available for 2 or more dimensions")
     
@@ -55,6 +67,11 @@ test_that("check plots are generated without errors", {
     expect_error(plotModel(cvMod, type = "singleDim"), NA)
     expect_error(plotModel(cvMod, type = "persp3d"), NA)
     
+    cvMod <- suppressWarnings(buildCVModel(x,y,buildRandomForest))
+    cvMod$target <- c("y","sLinear")
+    expect_error(plotModel(cvMod, type = "singleDim"), NA)
+    expect_error(plotModel(cvMod), NA)
+    
     ## 
     ## n Dimensional Plots
     ## 
@@ -73,4 +90,9 @@ test_that("check plots are generated without errors", {
     cvMod$target <- c("y","sLinear")
     expect_error(plotModel(cvMod, type = "singleDim"), NA)
     expect_error(plotModel(cvMod, type = "persp3d"), NA)
+    
+    cvMod <- suppressWarnings(buildCVModel(x,y,buildRandomForest))
+    cvMod$target <- c("y","sLinear")
+    expect_error(plotModel(cvMod, type = "singleDim"), NA)
+    expect_error(plotModel(cvMod), NA)
 })

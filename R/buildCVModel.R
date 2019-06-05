@@ -63,7 +63,7 @@ linearAdaptedSE <- function(sOld, newdata, x){
 
 predict.cvModel <- function(object,newdata,...){
     predictSingle <- function(model){
-        return(predict(model,newdata,...)$y)
+        return(predict(model,as.matrix(newdata),...)$y)
     }
     
     results <- list()
