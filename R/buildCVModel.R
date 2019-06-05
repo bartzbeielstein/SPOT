@@ -1,4 +1,15 @@
-
+#' buildCVModel
+#' 
+#' Build a set of models trained on different folds of cross-validated data.
+#' Can be used to estimate the uncertainty of a given model type at any point.
+#' 
+#' @param x design matrix (sample locations)
+#' @param y vector of observations at \code{x}
+#' @param modellingFunction the model that shall be fitted to each data fold
+#' @param control (list), with the options for the model building procedure:\cr
+#'
+#' @return set of models (class cvModel)
+#' @export
 buildCVModel <- function(x, y, modellingFunction, control=list()){
     ## Load Control list
     con<-list(nFolds = 10)
@@ -35,6 +46,13 @@ buildCVModel <- function(x, y, modellingFunction, control=list()){
     return(cvModel)
 }
 
+#' maxNearestNeighbourDistance
+#'
+#' Find the maximum distance between 2 nearest neighbours in a data set
+#'
+#' @param x matrix with candidate solutions
+#'
+#' @return maximum euclidean distance between two nearest neighbours
 maxNearestNeighbourDistance <- function(x){
     minDists <- NULL
     for(i in 1:nrow(x)){
@@ -44,6 +62,15 @@ maxNearestNeighbourDistance <- function(x){
     return(sqrt(max(minDists)))
 }
 
+#' linearAdaptedSE
+#' 
+#' Linearly adapt the uncertainty estimation of a CV model regarding its distance to known neighbours
+#'
+#' @param sOld numeric vector, old uncertainty values
+#' @param newdata matrix, new data points for which the uncertainty is estimated
+#' @param x matrix, already evaluated data points
+#'
+#' @return numeric vector, adapted uncertainty values
 linearAdaptedSE <- function(sOld, newdata, x){
     ifelse(is.null(nrow(newdata)),nr <- 1,nr <- nrow(newdata))
     if(nr <= 1){
@@ -61,6 +88,16 @@ linearAdaptedSE <- function(sOld, newdata, x){
     sOld *2 # ?
 }
 
+#' predict.cvModel
+#'
+#' Predict with the cross validated model
+#'
+#' @param object Kriging model (settings and parameters) of class \code{kriging}.
+#' @param newdata design matrix to be predicted
+#' @param ... Additional parameters passed to the model
+#'
+#' @return prediction results: list with predicted mean ('y'), estimated uncertainty ('y'), linearly adapted uncertainty ('sLinear')
+#' @export
 predict.cvModel <- function(object,newdata,...){
     predictSingle <- function(model){
         return(predict(model,as.matrix(newdata),...)$y)
