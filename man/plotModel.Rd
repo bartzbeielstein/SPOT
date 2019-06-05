@@ -4,9 +4,10 @@
 \alias{plotModel}
 \title{Surface plot of a model}
 \usage{
-plotModel(object, which = 1:2, constant = object$x[which.min(object$y),
-  ], xlab = paste("x", which, sep = ""), ylab = "y",
-  type = "filled.contour", ...)
+plotModel(object, which = if (ncol(object$x) > 1 & tolower(type) !=
+  "singledim") {     1:2 } else {     1 },
+  constant = object$x[which.min(object$y), ], xlab = paste("x", which,
+  sep = ""), ylab = "y", type = "filled.contour", ...)
 }
 \arguments{
 \item{object}{fit created by a modeling function, e.g., \code{\link{buildRandomForest}}.}

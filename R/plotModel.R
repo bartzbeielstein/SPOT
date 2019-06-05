@@ -33,46 +33,88 @@
 #' plotModel(fit,which=2:3)
 #'
 #' @seealso \code{\link{plotFunction}}, \code{\link{plotData}}
-#'
+#' 
 #' @export
 ###################################################################################################
-plotModel <- function(object,which=1:2,
+plotModel <- function(object,which=if(ncol(object$x)>1 & tolower(type) != "singledim"){1:2}else{1},
 						constant=object$x[which.min(object$y),], #best known solution. default.
 						xlab= paste("x",which,sep=""),ylab="y",type="filled.contour",...){
-  xlab <- xlab[order(which)]
-  which <- sort(which)
-	#number of variables
-  nvar <- ncol(object$x)
-	#bounds
-  lower <- apply(object$x[,which],2,min)
-  upper <- apply(object$x[,which],2,max)	
-	#varied variables
-	vary <-  (1:nvar) %in% which
-	force(object)
-	force(nvar)
-	force(vary)
-	force(constant)
-  if(nvar == 2){
-		plotfun <- evaluateModel(object)
-  }else if(nvar < 2 | length(which) != 2){
-    stop("This plot of a model can only be generated for exactly 2 variables.")
-  }else if(nvar > 2){
-		plotfun2 <- evaluateModel(object)
-		plotfun2
-	  plotfun <- function(xx){ #fix constants
-		  z2 <- matrix(constant,nrow(xx),nvar,byrow=TRUE)
-		  z2[,which(vary)[1]] <- xx[,1]
-			z2[,which(vary)[2]] <- xx[,2]
-			plotfun2(z2)
-		}	
-  }	
-	if(type=="persp3d"){
-		plotFunction(f=plotfun,lower=lower,upper=upper,
+    xlab <- xlab[order(which)]
+    which <- sort(which)
+    #number of variables
+    nvar <- ncol(object$x)
+    #bounds
+    if(length(which) == 1){
+        lower <- min(object$x)
+        upper <- max(object$x)
+    }else{
+        lower <- apply(object$x[,which],2,min)
+        upper <- apply(object$x[,which],2,max)
+    }
+    
+    #varied variables
+    vary <-  (1:nvar) %in% which
+    force(object)
+    force(nvar)
+    force(vary)
+    force(constant)
+    
+    ## Pre Checkup
+    if(nvar < 2 & tolower(type) != "singledim"){
+        stop("The specified plot type is only available for 2 or more dimensions")
+    }
+    
+    ## Preparation offunction for 'plotFunction()'
+    if(nvar == 1){
+        plotfun <- evaluateModel(object)
+    }else if(nvar == 2){
+        if(tolower(type) == "singledim"){
+            plotfun2 <- evaluateModel(object)
+            plotfun2
+            plotfun <- function(xx){ #fix constants
+                z2 <- matrix(constant,length(xx),nvar,byrow=TRUE)
+                z2[,which(vary)[1]] <- xx
+                plotfun2(z2)
+            }  
+        }else{
+            plotfun <- evaluateModel(object) 
+        }
+    }else if(nvar > 2){
+        plotfun2 <- evaluateModel(object)
+        plotfun2
+        if(tolower(type) == "singledim"){
+            plotfun <- function(xx){ #fix constants
+                z2 <- matrix(constant,length(xx),nvar,byrow=TRUE)
+                z2[,which(vary)[1]] <- xx
+                plotfun2(z2)
+            }  
+        }else{
+            plotfun <- function(xx){ #fix constants
+                z2 <- matrix(constant,nrow(xx),nvar,byrow=TRUE)
+                z2[,which(vary)[1]] <- xx[,1]
+                z2[,which(vary)[2]] <- xx[,2]
+                plotfun2(z2)
+            }	
+        }
+    }else{
+        stop("Dimensionality does not meet plot type")
+    }
+    
+    ##Wrapper for plotFun$y
+    plotfuny <- function(xx){
+        plotfun(xx)$y
+    }
+    
+    ## Call to plotFunction()
+    if(type=="persp3d"){
+        plotFunction(f=plotfuny,lower=lower,upper=upper,
                      type=type,
                      xlab=xlab[1],ylab=xlab[2],zlab=ylab,points1=cbind(object$x[,which],object$y),...)	
-	}else{
-		plotFunction(f=plotfun,lower=lower,upper=upper,
+    }else if(tolower(type) == "singledim"){
+        plotSingleDimFunction(plotfun, lower = lower, upper = upper, object$target)
+    }else{
+        plotFunction(f=plotfuny,lower=lower,upper=upper,
                      type=type,
                      xlab=xlab[1],ylab=xlab[2],zlab=ylab,points1=object$x[,which],...)	
-	}
+    }
 }

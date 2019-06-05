@@ -37,9 +37,10 @@ Imports:
     MASS,
     DEoptim,
     rgenoud,
-		plotly,
-		rsm,
-		nloptr
+	plotly,
+	rsm,
+	nloptr,
+	ggplot2
 RoxygenNote: 6.1.1
 Suggests:
     testthat

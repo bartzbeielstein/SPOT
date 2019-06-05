@@ -4,7 +4,7 @@
 \alias{evaluateModel}
 \title{Evaluate Model}
 \usage{
-evaluateModel(object)
+evaluateModel(object, onlyY = F)
 }
 \arguments{
 \item{object}{fit created by a modeling function, e.g., \code{\link{buildRandomForest}}}

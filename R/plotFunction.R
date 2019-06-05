@@ -56,7 +56,9 @@ plotFunction <- function(f=function(x){rowSums(x^2)},
   x <- seq(lower[1], upper[1], length = s)  
   y <- seq(lower[2], upper[2], length = s) 
   if(length(formals(f))==1){
-    fn <- function(a,b){f(cbind(a,b))}	
+    fn <- function(a,b){
+        f(cbind(a,b))
+    }	
     z <- outer(x, y, fn)
   }else if(length(formals(f))==2){
     z <- outer(x, y, f)	
@@ -136,5 +138,7 @@ plotFunction <- function(f=function(x){rowSums(x^2)},
       p <- p %>% add_trace(data=points2,x=points2[,1],z=points2[,3],y=points2[,2], mode = "markers", type = "scatter3d", 
             marker = list(size = 5, color = col2, symbol = 102))
 		p
+  }else if(type=="singleDim"){
+      
   }
 }
