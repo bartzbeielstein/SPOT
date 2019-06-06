@@ -12,18 +12,16 @@
 #' @export
 #' @keywords internal
 ###################################################################################################
-evaluateModel <- function(object, onlyY = F){
+evaluateModel <- function(object){
     if(is.null(object$target)) 
         object$target <- "y"
     
-    if(onlyY){
-        function(x){  
-            predict(object=object,newdata=x)[["y"]]
+    function(x){  
+        res <- predict(object=object,newdata=x)[object$target]
+        if(length(res) == 1){
+            res <- res[[1]]
         }
-    }else{
-        function(x){  
-            predict(object=object,newdata=x)[object$target]
-        }
+        return(res)
     }
 }
 

@@ -281,7 +281,7 @@ spotLoop <- function(x,y,fun,lower,upper,control,...){
     modelFit <- control$model(x=x,y=y,control=control$modelControl) #todo return modelControl to allow memory?
 		
 		## Generate a surrogate target function from the model
-		funSurrogate <- evaluateModel(modelFit, T)
+		funSurrogate <- evaluateModel(modelFit)
 		
 		## Model optimization
     optimRes <- control$optimizer(,funSurrogate,lower,upper,control$optimizerControl) #todo return optimizerControl to allow memory?

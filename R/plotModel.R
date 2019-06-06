@@ -102,7 +102,11 @@ plotModel <- function(object,which=if(ncol(object$x)>1 & tolower(type) != "singl
     
     ##Wrapper for plotFun$y
     plotfuny <- function(xx){
-        plotfun(xx)$y
+        res <- plotfun(xx)
+        if(is.list(res)){
+            return(res$y)
+        }
+        res
     }
     
     ## Call to plotFunction()
