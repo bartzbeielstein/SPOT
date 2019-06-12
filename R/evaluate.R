@@ -12,16 +12,26 @@
 #' @export
 #' @keywords internal
 ###################################################################################################
-evaluateModel <- function(object){
+evaluateModel <- function(object, infillCriterion = NULL){
     if(is.null(object$target)) 
         object$target <- "y"
     
-    function(x){  
+    evalModelFun <- function(x){  
         res <- predict(object=object,newdata=x)[object$target]
         if(length(res) == 1){
             res <- res[[1]]
         }
         return(res)
     }
+    
+    if(is.null(infillCriterion)){
+        return(evalModelFun)
+    }
+    
+    return(
+        function(x){
+            infillCriterion(evalModelFun(x), object)
+        }
+    )
 }
 
