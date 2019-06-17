@@ -4,10 +4,14 @@
 \alias{evaluateModel}
 \title{Evaluate Model}
 \usage{
-evaluateModel(object, onlyY = F)
+evaluateModel(object, infillCriterion = NULL)
 }
 \arguments{
 \item{object}{fit created by a modeling function, e.g., \code{\link{buildRandomForest}}}
+
+\item{infillCriterion}{optional parameter, a function that accepts prediction results and a model object. The function should use these
+to alter the prediction result in a user desired way. For example turning the prediction results of a kriging model (mean and sd) into the expected 
+improvement criterion}
 }
 \value{
 a function in the style of \code{y=f(x)}, which uses the fitted object to predict \code{y} for sample \code{x}.

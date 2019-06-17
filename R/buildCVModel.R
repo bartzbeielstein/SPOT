@@ -7,16 +7,26 @@
 #' @param y vector of observations at \code{x}
 #' @param modellingFunction the model that shall be fitted to each data fold
 #' @param control (list), with the options for the model building procedure:\cr
+#' \code{types} a character vector giving the data type of each variable. All but "factor" will be handled as numeric, "factor" (categorical) variables will be subject to the hamming distance.\cr
+#' \code{target} target values of the prediction, a vector of strings. Each string specifies a value to be predicted, e.g., "y" for mean, "s" for standard deviation.
+#' This can also be changed after the model has been built, by manipulating the respective \code{object$target} value.\cr
+#' \code{uncertaintyEstimator} a character vector specifying which uncertaintyEstimator should be used.
+#' "s" or the linearlyAdapted uncertrainty "sLinear". Default is "sLinear"
 #'
 #' @return set of models (class cvModel)
 #' @export
-buildCVModel <- function(x, y, modellingFunction, control=list()){
+buildCVModel <- function(x, y, control=list()){
     ## Load Control list
-    con<-list(nFolds = 10)
+    con<-list(nFolds = 10,
+              modellingFunction = buildKriging,
+              target = c("y","s"),
+              uncertaintyEstimator = "sLinear")
     con[names(control)] <- control
     control<-con
     
     control$nFolds <- min(control$nFolds, nrow(x))
+    
+    modellingFunction <- control$modellingFunction
     
     ## Empty List for the final model
     cvModel <- list()
@@ -24,6 +34,7 @@ buildCVModel <- function(x, y, modellingFunction, control=list()){
     ## Save initial x and y in model
     cvModel$x <- x
     cvModel$y <- y
+    cvModel[names(control)] <- control
     
     #Randomly shuffle the data
     shuffleIndexes <- sample(nrow(x))
@@ -103,23 +114,35 @@ predict.cvModel <- function(object,newdata,...){
         return(predict(model,as.matrix(newdata),...)$y)
     }
     
+    if(is.null(object$uncertaintyEstimator)){
+        object$uncertaintyEstimator <- "s"
+    }
+    
     results <- list()
     results$all <- sapply(object$models,predictSingle)
     
     ifelse(is.null(nrow(results$all)),nr <- 1,nr <- nrow(results$all))
     if(nr > 1){
         results$y <- apply(results$all,1,mean)
-        
         funSE <- function(x){
             sd(x)/sqrt(length(x))
         }
         results$s <- apply(results$all,1 , funSE)
-        results$sLinear <- linearAdaptedSE(results$s, newdata, object$x)
+        
+        if(tolower(object$uncertaintyEstimator) == "slinear"){
+            results$s <- linearAdaptedSE(results$s, newdata, object$x)
+        }else if(!(tolower(object$uncertaintyEstimator) %in% c("s", "slinear"))){
+            stop("unrecognized option for modelControl$uncertaintyEstimator")
+        }
     }else{
         results$y <- mean(results$all)
         results$s <- sd(results$all)/sqrt(length(results$all))
         
-        results$sLinear <- linearAdaptedSE(results$s, newdata, object$x)
+        if(tolower(object$uncertaintyEstimator) == "slinear"){
+            results$s <- linearAdaptedSE(results$s, newdata, object$x)
+        }else if(!(tolower(object$uncertaintyEstimator) %in% c("s", "slinear"))){
+            stop("unrecognized option for modelControl$uncertaintyEstimator")
+        }
     }
     
     return(results)

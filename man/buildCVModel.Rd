@@ -4,16 +4,21 @@
 \alias{buildCVModel}
 \title{buildCVModel}
 \usage{
-buildCVModel(x, y, modellingFunction, control = list())
+buildCVModel(x, y, control = list())
 }
 \arguments{
 \item{x}{design matrix (sample locations)}
 
 \item{y}{vector of observations at \code{x}}
 
-\item{modellingFunction}{the model that shall be fitted to each data fold}
+\item{control}{(list), with the options for the model building procedure:\cr
+\code{types} a character vector giving the data type of each variable. All but "factor" will be handled as numeric, "factor" (categorical) variables will be subject to the hamming distance.\cr
+\code{target} target values of the prediction, a vector of strings. Each string specifies a value to be predicted, e.g., "y" for mean, "s" for standard deviation.
+This can also be changed after the model has been built, by manipulating the respective \code{object$target} value.\cr
+\code{uncertaintyEstimator} a character vector specifying which uncertaintyEstimator should be used.
+"s" or the linearlyAdapted uncertrainty "sLinear". Default is "sLinear"}
 
-\item{control}{(list), with the options for the model building procedure:\cr}
+\item{modellingFunction}{the model that shall be fitted to each data fold}
 }
 \value{
 set of models (class cvModel)

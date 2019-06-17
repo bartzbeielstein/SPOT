@@ -66,10 +66,10 @@ plotModel <- function(object,which=if(ncol(object$x)>1 & tolower(type) != "singl
     
     ## Preparation offunction for 'plotFunction()'
     if(nvar == 1){
-        plotfun <- evaluateModel(object)
+        plotfun <- evaluateModel(object, infillCriterion = infillGetFullPrediction)
     }else if(nvar == 2){
         if(tolower(type) == "singledim"){
-            plotfun2 <- evaluateModel(object)
+            plotfun2 <- evaluateModel(object, infillCriterion = infillGetFullPrediction)
             plotfun2
             plotfun <- function(xx){ #fix constants
                 z2 <- matrix(constant,length(xx),nvar,byrow=TRUE)
@@ -77,10 +77,10 @@ plotModel <- function(object,which=if(ncol(object$x)>1 & tolower(type) != "singl
                 plotfun2(z2)
             }  
         }else{
-            plotfun <- evaluateModel(object) 
+            plotfun <- evaluateModel(object, infillCriterion = infillGetFullPrediction) 
         }
     }else if(nvar > 2){
-        plotfun2 <- evaluateModel(object)
+        plotfun2 <- evaluateModel(object, infillCriterion = infillGetFullPrediction)
         plotfun2
         if(tolower(type) == "singledim"){
             plotfun <- function(xx){ #fix constants

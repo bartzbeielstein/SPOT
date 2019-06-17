@@ -56,6 +56,7 @@ Control is a list of the settings:
 			for convergence, or for a problem with the configuration.
 			In case of noise, duplicates are allowed.}
   \item{\code{plots}}{Whether progress should be tracked by a line plot, default is false}
+  \item{\code{infillCriterion}}{A function defining an infillCriterion to be used while optimizing a model. Default: NULL. For example check infillExpectedImprovement}
 }
 }
 \keyword{internal}

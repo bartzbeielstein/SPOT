@@ -7,28 +7,31 @@ test_that("check plots are generated without errors", {
     x <- matrix(c(1,2,3,5,7,8,9), ncol = 1)
     y <- matrix(sin(x))
     krig <- buildKriging(x,y)
-    krig$target <- c("y","s")
+    krig$target <- c("y")
     
     expect_error(plotModel(krig, type = "singleDim"), NA)
     
-    cvMod <- buildCVModel(x,y,buildKriging)
+    cvMod <- buildCVModel(x,y,control = list(modellingFunction = buildKriging))
+    expect_error(plotModel(cvMod, type = "singleDim"), NA)
+    cvMod$target <- c("y")
     expect_error(plotModel(cvMod, type = "singleDim"), NA)
     cvMod$target <- c("y","s")
+    cvMod$uncertaintyEstimator <- "s"
     expect_error(plotModel(cvMod, type = "singleDim"), NA)
+    
+    cvMod <- suppressWarnings(buildCVModel(x,y,control = list(modellingFunction = buildRandomForest)))
     cvMod$target <- c("y","sLinear")
     expect_error(plotModel(cvMod, type = "singleDim"), NA)
     
-    cvMod <- suppressWarnings(buildCVModel(x,y,buildRandomForest))
-    cvMod$target <- c("y","sLinear")
-    expect_error(plotModel(cvMod, type = "singleDim"), NA)
-    
-    cvMod <- buildCVModel(x,y,buildLM)
-    cvMod$target <- c("y","sLinear")
-    expect_error(plotModel(cvMod, type = "singleDim"), NA)
-    
-    cvMod <- buildCVModel(x,y,buildRSM)
-    cvMod$target <- c("y","sLinear")
-    expect_error(plotModel(cvMod, type = "singleDim"), NA)
+    if(getOption("spot.run.full.test")){
+        cvMod <- buildCVModel(x,y,control = list(modellingFunction = buildLM))
+        cvMod$target <- c("y","sLinear")
+        expect_error(plotModel(cvMod, type = "singleDim"), NA)
+        
+        cvMod <- buildCVModel(x,y,control = list(modellingFunction = buildRSM))
+        cvMod$target <- c("y","sLinear")
+        expect_error(plotModel(cvMod, type = "singleDim"), NA)
+    }
     
     ## This should fail saying only 2 dimensional models can be plotted like that
     expect_error(plotModel(krig),"The specified plot type is only available for 2 or more dimensions")
@@ -51,48 +54,55 @@ test_that("check plots are generated without errors", {
         return(res)
     }
     
-    x <- matrix(runif(10), ncol = 2)
+    x <- matrix(runif(20), ncol = 2)
     y <- funRast(x)
     
     krig <- buildKriging(x,y)
     krig$target <- c("y","s","ei")
     expect_error(plotModel(krig), NA)
-    expect_error(plotModel(krig, type = "singleDim"), NA)
-    expect_error(plotModel(krig, type = "persp3d"), NA)
+    if(getOption("spot.run.full.test")){
+        expect_error(plotModel(krig, type = "singleDim"), NA)
+        expect_error(plotModel(krig, type = "persp3d"), NA)
+        
+        cvMod <- buildCVModel(x,y,control = list(modellingFunction = buildKriging))
+        expect_error(plotModel(cvMod), NA)
     
-    cvMod <- buildCVModel(x,y,buildKriging)
-    expect_error(plotModel(cvMod), NA)
-    expect_error(plotModel(cvMod, type = "singleDim"), NA)
-    cvMod$target <- c("y","sLinear")
-    expect_error(plotModel(cvMod, type = "singleDim"), NA)
-    expect_error(plotModel(cvMod, type = "persp3d"), NA)
-    
-    cvMod <- suppressWarnings(buildCVModel(x,y,buildRandomForest))
-    cvMod$target <- c("y","sLinear")
-    expect_error(plotModel(cvMod, type = "singleDim"), NA)
-    expect_error(plotModel(cvMod), NA)
+        expect_error(plotModel(cvMod, type = "singleDim"), NA)
+        cvMod$target <- c("y","sLinear")
+        expect_error(plotModel(cvMod, type = "singleDim"), NA)
+        expect_error(plotModel(cvMod, type = "persp3d"), NA)
+        
+        cvMod <- suppressWarnings(buildCVModel(x,y,control = list(modellingFunction = buildRandomForest)))
+        cvMod$target <- c("y","sLinear")
+        expect_error(plotModel(cvMod, type = "singleDim"), NA)
+        expect_error(plotModel(cvMod), NA)
+    }
     
     ## 
     ## n Dimensional Plots
     ## 
-    x <- matrix(runif(4*30), ncol = 4)
-    y <- funRast(x)
-    
-    krig <- buildKriging(x,y)
-    krig$target <- c("y","s","ei")
-    expect_error(plotModel(krig), NA)
-    expect_error(plotModel(krig, type = "singleDim"), NA)
-    expect_error(plotModel(krig, type = "persp3d"), NA)
-    
-    cvMod <- buildCVModel(x,y,buildKriging)
-    expect_error(plotModel(cvMod), NA)
-    expect_error(plotModel(cvMod, type = "singleDim"), NA)
-    cvMod$target <- c("y","sLinear")
-    expect_error(plotModel(cvMod, type = "singleDim"), NA)
-    expect_error(plotModel(cvMod, type = "persp3d"), NA)
-    
-    cvMod <- suppressWarnings(buildCVModel(x,y,buildRandomForest))
-    cvMod$target <- c("y","sLinear")
-    expect_error(plotModel(cvMod, type = "singleDim"), NA)
-    expect_error(plotModel(cvMod), NA)
+    if(getOption("spot.run.full.test")){
+        x <- matrix(runif(4*30), ncol = 4)
+        y <- funRast(x)
+        
+        krig <- buildKriging(x,y)
+        krig$target <- c("y","s","ei")
+        expect_error(plotModel(krig), NA)
+        expect_error(plotModel(krig, type = "singleDim"), NA)
+        expect_error(plotModel(krig, type = "persp3d"), NA)
+        
+        cvMod <- buildCVModel(x,y,control = list(modellingFunction = buildKriging))
+        expect_error(plotModel(cvMod), NA)
+        expect_error(plotModel(cvMod, type = "singleDim"), NA)
+        cvMod$target <- c("y","sLinear")
+        
+        expect_error(plotModel(cvMod, type = "singleDim"), NA)
+        expect_error(plotModel(cvMod, type = "persp3d"), NA)
+        
+        
+        cvMod <- suppressWarnings(buildCVModel(x,y,control = list(modellingFunction = buildRandomForest)))
+        cvMod$target <- c("y","sLinear")
+        expect_error(plotModel(cvMod, type = "singleDim"), NA)
+        expect_error(plotModel(cvMod), NA)
+    }
 })

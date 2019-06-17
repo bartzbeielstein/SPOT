@@ -25,10 +25,6 @@ plotSingleDimFunction <- function(evalFun, lower, upper, target){
             withSE = T
             s <- evalFun(x)$s 
         }
-        if("sLinear" %in% target){
-            withSE = T
-            s <- evalFun(x)$sLinear
-        }
     }
     
     if(!withSE){
