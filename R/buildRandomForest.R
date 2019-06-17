@@ -39,7 +39,7 @@
 #todo: example
 buildRandomForest <- function(x, y, control=list()){ 
   fit <- list()
-  fit$rfFit <- randomForest(x, y)
+  fit$rfFit <- suppressWarnings(randomForest(x, y))
 	fit$pNames <- colnames(x)
 	fit$x <- x
 	fit$y <- y
