@@ -66,3 +66,41 @@ parallelWrapFunction <- function(fun, cl = NULL, nCores = NULL){
         }
     )
 }
+
+
+#' wrapBatchTools
+#' 
+#' wrapFunction to call a function through batchtools
+#'
+#' @param fun 
+#' @param reg 
+#' @param clusterFunction 
+#' @param resources 
+#'
+#' @return
+#' @export
+wrapBatchTools <- function(fun, reg = NULL,
+                           clusterFunction = batchtools::makeClusterFunctionsInteractive(), resources = NULL){
+    
+    if(is.null(reg)){
+        reg <- tryCatch(batchtools::getDefaultRegistry(),error = {
+            batchtools::makeRegistry(NA)
+        })
+    }
+    
+    reg$cluster.functions <- clusterFunction
+    batchtools::setDefaultRegistry(reg)
+    
+    function(x){
+        batchtools::clearRegistry(reg)
+        
+        if(!is.null(nrow(x))){
+            x <- split(x, rep(1:nrow(x), each = ncol(x)))
+            results <- as.vector(unlist(batchtools::btlapply(x, fun, resources = resources, reg = reg)))
+        }else{
+            results <- batchtools::btlapply(x, fun, resources = resources, reg = reg)
+        }
+        
+        results
+    }
+}
