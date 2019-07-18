@@ -113,15 +113,8 @@ spot <- function(x=NULL,fun, #mostly, fun must have format y=f(x,...).
     
 	## default settings
 	dimension <- length(lower)
-	con <- spotControl(dimension)
-	con[names(control)] <- control
-	control <- con
-	rm(con)
-
-	## All functions should deal with the same data types 
-	control$designControl$types <- control$types
-	control$modelControl$types <- control$types
-	control$optimizerControl$types <- control$types
+	
+	control <- spotFillControlList(control, dimension)
 	
 	## Initial design generation
 	set.seed(control$seedSPOT)
@@ -136,6 +129,20 @@ spot <- function(x=NULL,fun, #mostly, fun must have format y=f(x,...).
 	result <- spotLoop(x=x,y=y,fun=fun,lower=lower,upper=upper,control=control, ...)
 	result
 } 
+
+spotFillControlList <- function(controlList, dimension){
+    con <- spotControl(dimension)
+    con[names(controlList)] <- controlList
+    controlList <- con
+    rm(con)
+    
+    ## All functions should deal with the same data types 
+    controlList$designControl$types <- controlList$types
+    controlList$modelControl$types <- controlList$types
+    controlList$optimizerControl$types <- controlList$types
+    
+    return(controlList)
+}
 
 ###################################################################################################
 #' Default Control list for spot 
