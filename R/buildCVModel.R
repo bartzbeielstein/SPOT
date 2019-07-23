@@ -84,8 +84,9 @@ maxNearestNeighbourDistance <- function(x){
 #' @return numeric vector, adapted uncertainty values
 linearAdaptedSE <- function(sOld, newdata, x){
     ifelse(is.null(nrow(newdata)),nr <- 1,nr <- nrow(newdata))
+    newdata <- matrix(newdata, nrow = nr)
     if(nr <= 1){
-        for(i in 1:length(newdata)){
+        for(i in 1:nrow(newdata)){
             minDist <- min(abs(x-newdata[i]))
             sOld[i] <- sOld[i] * minDist/max(diff(sort(x)))
         }
@@ -96,7 +97,7 @@ linearAdaptedSE <- function(sOld, newdata, x){
             sOld[i] <- sOld[i] * minDist/maxNearestNeighbourDistance(x)
         }
     }
-    sOld *2 # ?
+    sOld * 2 # ?
 }
 
 #' predict.cvModel
