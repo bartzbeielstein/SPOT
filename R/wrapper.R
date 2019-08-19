@@ -33,6 +33,7 @@ wrapFunction <- function(fun){
   return(function(x){matrix(apply(x,1,fun),,1)})
 }
 
+###################################################################################################
 #' Parallelized Function Evaluation Wrapper
 #'
 #' This is a simple wrapper that turns a function of type \code{y=f(x)}, where x is a vector and y is a scalar,
@@ -47,8 +48,7 @@ wrapFunction <- function(fun){
 #'
 #' @return numeric vector, result of the parallelized evaluation
 #' @export
-#'
-#' @examples
+###################################################################################################
 parallelWrapFunction <- function(fun, cl = NULL, nCores = NULL){
     if(is.null(cl)){
         cl <- parallel::getDefaultCluster()
@@ -68,6 +68,7 @@ parallelWrapFunction <- function(fun, cl = NULL, nCores = NULL){
 }
 
 
+###################################################################################################
 #' wrapBatchTools
 #' 
 #' wrapFunction to call a function through batchtools
@@ -77,8 +78,9 @@ parallelWrapFunction <- function(fun, cl = NULL, nCores = NULL){
 #' @param clusterFunction 
 #' @param resources 
 #'
-#' @return
+#' @return a function
 #' @export
+###################################################################################################
 wrapBatchTools <- function(fun, reg = NULL,
                            clusterFunction = batchtools::makeClusterFunctionsInteractive(), resources = NULL){
     

@@ -17,6 +17,9 @@ wrapBatchTools(fun, reg = NULL,
 
 \item{resources}{}
 }
+\value{
+a function
+}
 \description{
 wrapFunction to call a function through batchtools
 }
