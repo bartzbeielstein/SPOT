@@ -20,6 +20,9 @@ wrapBatchTools(fun, reg = NULL,
 \value{
 callable function for SPOT
 }
+\value{
+a function
+}
 \description{
 wrapFunction to call a function through batchtools
 }
