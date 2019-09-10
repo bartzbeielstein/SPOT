@@ -47,9 +47,7 @@ wrapFunction <- function(fun){
 #'
 #' @return numeric vector, result of the parallelized evaluation
 #' @export
-#'
-#' @examples
-parallelWrapFunction <- function(fun, cl = NULL, nCores = NULL){
+wrapFunctionParallel <- function(fun, cl = NULL, nCores = NULL){
     if(is.null(cl)){
         cl <- parallel::getDefaultCluster()
         if(is.null(cl)){
@@ -72,12 +70,12 @@ parallelWrapFunction <- function(fun, cl = NULL, nCores = NULL){
 #' 
 #' wrapFunction to call a function through batchtools
 #'
-#' @param fun 
-#' @param reg 
-#' @param clusterFunction 
-#' @param resources 
+#' @param fun function to wrap
+#' @param reg batchtools registry, if none is provided, then one will be created automatically
+#' @param clusterFunction batchtools clusterFunction, default: makeClusterFunctionsInteractive()
+#' @param resources resource list, default NULL
 #'
-#' @return
+#' @return callable function for SPOT
 #' @export
 wrapBatchTools <- function(fun, reg = NULL,
                            clusterFunction = batchtools::makeClusterFunctionsInteractive(), resources = NULL){
@@ -103,4 +101,68 @@ wrapBatchTools <- function(fun, reg = NULL,
         
         results
     }
+}
+
+#' wrapSystem_parseMatrixToString
+#' 
+#' Create a String that can be passed via the command line from an R-Matrix
+#'
+#' @param m a matrix
+#'
+#' @return parsed string
+#' @export
+wrapSystem_parseMatrixToString <- function(m){
+    parseVecToString <- function(x){
+        return(paste0("(", paste(x, sep =",", collapse = ","),")"))
+    }
+    return(paste0("'(", paste(apply(m,1,parseVecToString),sep =",", collapse = ","),")'"))
+}
+
+#' wrapSystem_parseMatrixFromString
+#' 
+#' Create an R-Matrix from a String that was passed via the command line
+#'
+#' @param str String that was recieved from the command line
+#'
+#' @return parsed matrix
+#' @export
+wrapSystem_parseMatrixFromString <- function(str){
+    cutBrackets <- function(str){
+        substr(str, 2, nchar(str)-1)
+    }
+    getVector <- function(str){
+        str <- gsub("(","",str, fixed=T)
+        str <- gsub(")","",str, fixed=T)
+        str <- strsplit(str,",", fixed=T)[[1]]
+        as.numeric(str)
+    }
+    
+    str <- cutBrackets(cutBrackets(str))
+    str <- strsplit(str,"),(",fixed = T)[[1]]
+    mt <- t(as.matrix(sapply(str, getVector)))
+    colnames(mt) <- NULL
+    rownames(mt) <- NULL
+    return(mt)
+}
+
+#' wrapSystemCommand
+#' 
+#' Optimize parameters for a script that is accessible via Command Line
+#'
+#' @param systemCall String that calls the command line script. 
+#'
+#' @return callable function for SPOT
+#' @export
+#' @examples
+#' f <- wrapSystemCommand("Rscript tests/consoleCallTrialScript.R")
+#' spot(,f,c(1,1),c(100,100))
+wrapSystemCommand <- function(systemCall){
+    return(
+        function(x){
+            res <- system(paste(systemCall, wrapSystem_parseMatrixToString(x)), intern=T)
+            res <- paste(strsplit(res,"(", fixed=T)[[1]][-1],sep="(", collapse = "(")
+            res <- paste0("(",paste(head(strsplit(res,")", fixed=T)[[1]],-1),sep=")", collapse = ")"),")")
+            return(wrapSystem_parseMatrixFromString(res))
+        }
+    )
 }

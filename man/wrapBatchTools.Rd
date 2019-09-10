@@ -9,13 +9,16 @@ wrapBatchTools(fun, reg = NULL,
   resources = NULL)
 }
 \arguments{
-\item{fun}{}
+\item{fun}{function to wrap}
 
-\item{reg}{}
+\item{reg}{batchtools registry, if none is provided, then one will be created automatically}
 
-\item{clusterFunction}{}
+\item{clusterFunction}{batchtools clusterFunction, default: makeClusterFunctionsInteractive()}
 
-\item{resources}{}
+\item{resources}{resource list, default NULL}
+}
+\value{
+callable function for SPOT
 }
 \description{
 wrapFunction to call a function through batchtools
