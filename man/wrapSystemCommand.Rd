@@ -16,6 +16,7 @@ callable function for SPOT
 Optimize parameters for a script that is accessible via Command Line
 }
 \examples{
-f <- wrapSystemCommand("Rscript tests/consoleCallTrialScript.R")
+exampleScriptLocation <- system.file("consoleCallTrialScript.R",package = "SPOT")
+f <- wrapSystemCommand(paste("Rscript", exampleScriptLocation))
 spot(,f,c(1,1),c(100,100))
 }
