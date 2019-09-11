@@ -113,39 +113,12 @@ wrapBatchTools <- function(fun, reg = NULL,
 #' @param m a matrix
 #'
 #' @return parsed string
-#' @export
+#' @keywords internal
 wrapSystem_parseMatrixToString <- function(m){
     parseVecToString <- function(x){
-        return(paste0("(", paste(x, sep =",", collapse = ","),")"))
+        return(paste(x, sep =",", collapse = ","))
     }
-    return(paste0("'(", paste(apply(m,1,parseVecToString),sep =",", collapse = ","),")'"))
-}
-
-#' wrapSystem_parseMatrixFromString
-#' 
-#' Create an R-Matrix from a String that was passed via the command line
-#'
-#' @param str String that was recieved from the command line
-#'
-#' @return parsed matrix
-#' @export
-wrapSystem_parseMatrixFromString <- function(str){
-    cutBrackets <- function(str){
-        substr(str, 2, nchar(str)-1)
-    }
-    getVector <- function(str){
-        str <- gsub("(","",str, fixed=T)
-        str <- gsub(")","",str, fixed=T)
-        str <- strsplit(str,",", fixed=T)[[1]]
-        as.numeric(str)
-    }
-    
-    str <- cutBrackets(cutBrackets(str))
-    str <- strsplit(str,"),(",fixed = T)[[1]]
-    mt <- t(as.matrix(sapply(str, getVector)))
-    colnames(mt) <- NULL
-    rownames(mt) <- NULL
-    return(mt)
+    return(apply(m,1,parseVecToString))
 }
 
 #' wrapSystemCommand
@@ -162,10 +135,13 @@ wrapSystem_parseMatrixFromString <- function(str){
 wrapSystemCommand <- function(systemCall){
     return(
         function(x){
-            res <- system(paste(systemCall, wrapSystem_parseMatrixToString(x)), intern=T)
-            res <- paste(strsplit(res,"(", fixed=T)[[1]][-1],sep="(", collapse = "(")
-            res <- paste0("(",paste(head(strsplit(res,")", fixed=T)[[1]],-1),sep=")", collapse = ")"),")")
-            return(wrapSystem_parseMatrixFromString(res))
+            paramStrings <- wrapSystem_parseMatrixToString(x)
+            doSysCall <- function(p){
+                system(paste(systemCall, p), intern=T)
+            }
+            res <- lapply(paramStrings, doSysCall)
+            res <- matrix(as.numeric(unlist(res)), ncol=1)
+            return(res)
         }
     )
 }

@@ -15,3 +15,4 @@ parsed string
 \description{
 Create a String that can be passed via the command line from an R-Matrix
 }
+\keyword{internal}
