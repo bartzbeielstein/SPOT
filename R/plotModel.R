@@ -14,7 +14,7 @@
 #' @param xlab a vector of characters, giving the labels for each of the two independent variables.
 #' @param ylab character, the value of the dependent variable predicted by the corresponding model.
 #' @param type string describing the type of the plot:  \code{"filled.contour"} (default), \code{"contour"}, 
-#' \code{"persp"} (perspective), or \code{"persp3d"} plot.
+#' \code{"persp"} (perspective), \code{"persp3d"} or \code{"singleDim"} plot.
 #' Note that "persp3d" is based on the plotly package and will work in RStudio, but not in the standard RGui.
 #' @param ... additional parameters passed to the \code{contour} or \code{filled.contour} function.
 #'
@@ -115,7 +115,7 @@ plotModel <- function(object,which=if(ncol(object$x)>1 & tolower(type) != "singl
                      type=type,
                      xlab=xlab[1],ylab=xlab[2],zlab=ylab,points1=cbind(object$x[,which],object$y),...)	
     }else if(tolower(type) == "singledim"){
-        plotSingleDimFunction(plotfun, lower = lower, upper = upper, object$target)
+        plotSingleDimFunction(plotfun, lower = lower, upper = upper, object$target, points=cbind(object$x[,which],object$y))
     }else{
         plotFunction(f=plotfuny,lower=lower,upper=upper,
                      type=type,

@@ -11,10 +11,12 @@
 #' @importFrom ggplot2 geom_line
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 geom_ribbon
-plotSingleDimFunction <- function(evalFun, lower, upper, target){
+#' @importFrom ggplot2 geom_point
+plotSingleDimFunction <- function(evalFun, lower, upper, target, points){
     force(evalFun)
     
-    x <- seq(lower, upper, length.out = 200)
+    points <- as.data.frame(points)
+    x <- matrix(seq(lower, upper, length.out = 200), ncol=1)
     
     withSE = F
     if(is.null(target) | length(target) == 1){
@@ -29,10 +31,14 @@ plotSingleDimFunction <- function(evalFun, lower, upper, target){
     
     if(!withSE){
         ggplot(data=data.frame(x,y), aes(x=x, y=y, group=1)) +
-            geom_line()
+            geom_line() #+ 
+            #geom_point(data = points, 
+            #           mapping = aes(x = points[, 1], y = points[,ncol(points)]))
     }else{
         ggplot(data=data.frame(x,s), aes(x=x)) +
             geom_line(aes(y = y)) + 
-            geom_ribbon(aes(ymax=y + s, ymin=y - s), fill="pink", alpha=.5)
+            geom_ribbon(aes(ymax=y + s, ymin=y - s), fill="pink", alpha=.5)# + 
+            #geom_point(data = points, 
+            #                mapping = aes(x = points[, 1], y = points[,ncol(points)]))
     }
 }

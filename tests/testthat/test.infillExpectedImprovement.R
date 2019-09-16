@@ -16,7 +16,8 @@ test_that("check that infillExpectedImprovement has same result as target=ei", {
     
     ## InfillExpectedImprovement should produce exactly the same results as target=ei. Target=y should not!
     set.seed(1)
-    resA <- spot(,funSphere,c(-2,-3),c(1,2), control = list(infillCriterion = infillExpectedImprovement, modelControl = list(target = c("y","s"))))
+    resA <- spot(,funSphere,c(-2,-3),c(1,2), control = 
+                     list(infillCriterion = infillExpectedImprovement, modelControl = list(target = c("y","s"))))
     set.seed(1)
     resB <- spot(,funSphere,c(-2,-3),c(1,2), control = list(modelControl = list(target = c("ei"))))
     set.seed(1)
@@ -51,9 +52,11 @@ test_that("infillExpectedImprovement works with cvModels and sLinear", {
     }
     
     ## Specifying target y should fail because expected improvement needs an uncertainty
-    expect_error(spot(,funSphere,c(-2,-3),c(1,2), control = list(infillCriterion = infillExpectedImprovement, model = buildCVModel, modelControl = 
+    expect_error(spot(,funSphere,c(-2,-3),c(1,2), control = list(infillCriterion = infillExpectedImprovement, 
+                                                                 model = buildCVModel, modelControl = 
                                                                      list(target = c("y"),
-                                                                          modellingFunction = buildKriging))))
+                                                                          modellingFunction = buildKriging))),
+                 "The target function is a single thing, did you maybe forget to add a target uncertainty s in modelControl?")
     
     ## Target y,sLinear should be the same as target NULL but should be different from target s
     if(getOption("spot.run.full.test", FALSE)){

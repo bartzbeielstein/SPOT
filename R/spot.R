@@ -118,7 +118,9 @@ spot <- function(x=NULL,fun, #mostly, fun must have format y=f(x,...).
 	
 	## Initial design generation
 	set.seed(control$seedSPOT)
-  x <- control$design(x=x,lower=lower,upper=upper,control=control$designControl)
+	if((is.null(control$designControl$size)) || (!control$designControl$size == 0)){
+	    x <- control$design(x=x,lower=lower,upper=upper,control=control$designControl)
+	}
 
   ## Rounding values produced by the design function to integers, etc.
   x <- repairNonNumeric(x,control$types)
