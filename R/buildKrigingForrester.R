@@ -114,7 +114,10 @@ buildKriging <- function(x, y, control=list()){
 		algTheta=optimLBFGSB, budgetAlgTheta=200, 
 		optimizeP= FALSE, 
 		useLambda=TRUE, lambdaLower = -6, lambdaUpper = 0, 
-		startTheta=NULL, reinterpolate=TRUE, target="y", eiScaleLimit = NULL)
+		startTheta=NULL, reinterpolate=TRUE, target="y",
+		globalInitialBudget = NULL,
+		globalBudget = NULL,
+		eiUseWeightedBudgetSum = F)
 	con[names(control)] <- control
 	control<-con
 	
@@ -472,11 +475,7 @@ predict.kriging <- function(object,newdata,...){
 		s <- sqrt(abs(SSqr))
     res$s <- s
     if(any(object$target == "ei")){
-        budgetScaling <- 1
-        if(!is.null(object$eiScaleLimit)){
-            budgetScaling <- 1-min(nrow(object$x)/object$eiScaleLimit, 1)
-        }
-      res$ei <- expectedImprovement(f,s,object$min, budgetScaling)
+        res$ei <- infillExpectedImprovement(list("y" = f, "s" = s),object)
     }    
 	}
   res
@@ -591,12 +590,7 @@ predictKrigingReinterpolation <- function(object,newdata,...){
 		s <- sqrt(abs(SSqr))
     res$s <- s
     if(any(object$target == "ei")){
-        
-        budgetScaling <- 1
-        if(!is.null(object$eiScaleLimit)){
-            budgetScaling <- 1-min(nrow(object$x)/object$eiScaleLimit, 1)
-        }
-        res$ei <- expectedImprovement(f,s,object$min, budgetScaling)
+        res$ei <- infillExpectedImprovement(list("y" = f, "s" = s),object)
     }    
 	}
   res
