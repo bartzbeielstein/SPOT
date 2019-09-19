@@ -119,6 +119,7 @@ buildKriging <- function(x, y, control=list()){
 	control<-con
 	
 	fit <- control
+	
 	k <- ncol(x)
 	fit$x <- x
 	fit$y <- y
@@ -473,7 +474,7 @@ predict.kriging <- function(object,newdata,...){
     if(any(object$target == "ei")){
         budgetScaling <- 1
         if(!is.null(object$eiScaleLimit)){
-            budgetScaling <- 1-nrow(object$x)/object$eiScaleLimit
+            budgetScaling <- 1-min(nrow(object$x)/object$eiScaleLimit, 1)
         }
       res$ei <- expectedImprovement(f,s,object$min, budgetScaling)
     }    
@@ -590,7 +591,12 @@ predictKrigingReinterpolation <- function(object,newdata,...){
 		s <- sqrt(abs(SSqr))
     res$s <- s
     if(any(object$target == "ei")){
-      res$ei <- expectedImprovement(f,s,object$min)
+        
+        budgetScaling <- 1
+        if(!is.null(object$eiScaleLimit)){
+            budgetScaling <- 1-min(nrow(object$x)/object$eiScaleLimit, 1)
+        }
+        res$ei <- expectedImprovement(f,s,object$min, budgetScaling)
     }    
 	}
   res
