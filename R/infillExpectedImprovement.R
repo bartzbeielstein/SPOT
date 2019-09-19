@@ -14,7 +14,7 @@
 infillExpectedImprovement <- function(predictionList, model){
     budgetScaling <- 1
     if(!is.null(model$globalBudget)){
-        budgetScaling <- 1 - min((nrow(x)-model$globalInitialBudget)/(model$globalBudget-model$globalInitialBudget-1),1)
+        budgetScaling <- 1 - min((nrow(model$x)-model$globalInitialBudget)/(model$globalBudget-model$globalInitialBudget-1),1)
     }
     
     mean <- predictionList$y
