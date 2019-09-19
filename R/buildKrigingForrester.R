@@ -114,7 +114,7 @@ buildKriging <- function(x, y, control=list()){
 		algTheta=optimLBFGSB, budgetAlgTheta=200, 
 		optimizeP= FALSE, 
 		useLambda=TRUE, lambdaLower = -6, lambdaUpper = 0, 
-		startTheta=NULL, reinterpolate=TRUE, target="y", eiScaleLimit = nrow(x))
+		startTheta=NULL, reinterpolate=TRUE, target="y", eiScaleLimit = NULL)
 	con[names(control)] <- control
 	control<-con
 	
@@ -217,7 +217,7 @@ buildKriging <- function(x, y, control=list()){
 	
 	## calculate observed minimum
 	## TEST FR
-	#if(any(duplicated(x))){
+	if(any(duplicated(x))){
 	    xlist <- split(x, 1:nrow(x))
 	    uniquex <- unique(xlist)
 	    ymean <- NULL
@@ -225,11 +225,10 @@ buildKriging <- function(x, y, control=list()){
 	        ind <- xlist %in% list(xi)
 	        ymean <- c(ymean, mean(y[ind]))
 	    }	
-	    
 	    fit$min <- min(ymean)
-	#}else{
-	#    fit$min <- min(y)
-	#}
+	}else{
+	    fit$min <- min(y)
+	}
 	
 		
 	class(fit)<- "kriging"
@@ -453,7 +452,7 @@ predict.kriging <- function(object,newdata,...){
   psi <- matrix(0,k,n)
 	for (i in 1:nvar){ #todo nnn number variables 
 	  #psi[,i] <- colSums(theta*(abs(AX[i,]-t(x))^p))
-	  tmp <- expand.grid(AX[,i],x[,i])
+	  tmp <- expand.grid.jc(AX[,i],x[,i])
     if(object$types[i]=="factor"){
       tmp <- as.numeric(tmp[,1]!=tmp[,2])^p[i]
     }else{
@@ -472,7 +471,11 @@ predict.kriging <- function(object,newdata,...){
 		s <- sqrt(abs(SSqr))
     res$s <- s
     if(any(object$target == "ei")){
-      res$ei <- expectedImprovement(f,s,object$min, 1-nrow(object$x)/object$eiScaleLimit)
+        budgetScaling <- 1
+        if(!is.null(object$eiScaleLimit)){
+            budgetScaling <- 1-nrow(object$x)/object$eiScaleLimit
+        }
+      res$ei <- expectedImprovement(f,s,object$min, budgetScaling)
     }    
 	}
   res
@@ -559,8 +562,8 @@ predictKrigingReinterpolation <- function(object,newdata,...){
 	  
 	    
 	  ### TEST FR
-	  tmp <- expand.grid(AX[,i],x[,i])
-	  #tmp <- expand.grid.jc(AX[,i],x[,i])
+	  #tmp <- expand.grid(AX[,i],x[,i])
+	  tmp <- expand.grid.jc(AX[,i],x[,i])
 	    
 	  
 	  if(object$types[i]=="factor"){
