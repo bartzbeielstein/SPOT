@@ -23,7 +23,6 @@
 #' EI
 ###################################################################################################
 expectedImprovement <- function(mean,sd,min, budgetScalingFactor = 1){ #NegLogExpImp 
-    print(budgetScalingFactor)
     sd <- sd * budgetScalingFactor
 	EITermOne=(min-mean)*pnorm((min-mean)/sd)
 	EITermTwo=sd*(1/sqrt(2*pi))*exp(-(1/2)*((min-mean)^2/(sd^2)))
