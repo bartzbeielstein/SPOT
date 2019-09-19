@@ -100,6 +100,18 @@ linearAdaptedSE <- function(sOld, newdata, x){
     sOld * 2 # ?
 }
 
+distanceAdaptedSE <- function(sOld, newData, x){
+    mcomp <- rbind(x, newData)
+    dm <- as.matrix(dist(mcomp))
+    dm <- dm / max(dm[1:nrow(x),1:nrow(x)])
+    dv <- t(dm[1:nrow(x),(nrow(x)+1):nrow(dm)])
+    
+    dm <- dm[1:nrow(x),1:nrow(x)]
+    dmi <- solve(dm)
+    
+    sOld * diag(abs(dv %*% dmi %*% t(dv)))
+}
+
 #' predict.cvModel
 #'
 #' Predict with the cross validated model
@@ -130,18 +142,26 @@ predict.cvModel <- function(object,newdata,...){
         }
         results$s <- apply(results$all,1 , funSE)
         
-        if(tolower(object$uncertaintyEstimator) == "slinear"){
+        if(tolower(object$uncertaintyEstimator) == "s"){
+            return(results)
+        }else if(tolower(object$uncertaintyEstimator) == "slinear"){
             results$s <- linearAdaptedSE(results$s, newdata, object$x)
-        }else if(!(tolower(object$uncertaintyEstimator) %in% c("s", "slinear"))){
+        }else if(tolower(object$uncertaintyEstimator) == "distance"){
+            results$s <- distanceAdaptedSE(results$s, newdata, object$x)
+        }else{
             stop("unrecognized option for modelControl$uncertaintyEstimator")
         }
     }else{
         results$y <- mean(results$all)
         results$s <- sd(results$all)/sqrt(length(results$all))
         
-        if(tolower(object$uncertaintyEstimator) == "slinear"){
+        if(tolower(object$uncertaintyEstimator) == "s"){
+            return(results)
+        }else if(tolower(object$uncertaintyEstimator) == "slinear"){
             results$s <- linearAdaptedSE(results$s, newdata, object$x)
-        }else if(!(tolower(object$uncertaintyEstimator) %in% c("s", "slinear"))){
+        }else if(tolower(object$uncertaintyEstimator) == "distance"){
+            results$s <- distanceAdaptedSE(results$s, newdata, object$x)
+        }else{
             stop("unrecognized option for modelControl$uncertaintyEstimator")
         }
     }
