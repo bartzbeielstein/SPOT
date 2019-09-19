@@ -12,8 +12,14 @@
 #' @examples
 #' spot(,funSphere,c(-2,-3),c(1,2), control = list(infillCriterion = infillExpectedImprovement, modelControl = list(target = c("y","s"))))
 infillExpectedImprovement <- function(predictionList, model){
+    budgetScaling <- 1
+    if(!is.null(model$eiScaleLimit)){
+        budgetScaling <- 1-min(nrow(model$x)/model$eiScaleLimit, 1)
+    }
+    
     mean <- predictionList$y
     sd <- predictionList$s
+    sd <- sd * budgetScaling
     modelMin <- min(model$y)
     
     return(expectedImprovement(mean,sd,modelMin))
