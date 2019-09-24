@@ -30,7 +30,7 @@ infillExpectedImprovement <- function(predictionList, model){
         eiTerm <- EITermOne + EITermTwo
         
         mean <- (mean-min(model$y))/(max(model$y)-min(model$y))
-        maxEI <- sqrt(model$ssq) * (1/sqrt(2*pi))
+        maxEI <- sd(model$y) * (1/sqrt(2*pi))
         eiTerm <- (eiTerm)/(maxEI)
         
         return(mean * budgetScaling - eiTerm * (1 - budgetScaling))
