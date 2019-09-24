@@ -285,6 +285,8 @@ spotLoop <- function(x,y,fun,lower,upper,control,...){
 	## Initialize evaluation counter
   count <- nrow(y)
   
+  loggedUncertainties <- NULL
+  
 	## Main Loop
 	modelFit <- NA
 	while(count < control$funEvals){ 
@@ -293,6 +295,15 @@ spotLoop <- function(x,y,fun,lower,upper,control,...){
 		
 		## Generate a surrogate target function from the model
 		funSurrogate <- evaluateModel(modelFit, control$infillCriterion)
+		
+		if(control$logUncertainties){
+		    xRandPoints <- NULL
+		    for(i in 1:length(lower)){
+		        xRandPoints <- cbind(xRandPoints, matrix(runif(1000,lower[i], upper[i]), ncol = 1))
+		    }
+		    sRes <- summary(predict(modelFit, xRandPoints)$s)
+		    loggedUncertainties$s <- rbind(loggedUncertainties$s, data.frame(t(as.matrix(sRes))))
+		}
 		
 		## Model optimization
     optimRes <- control$optimizer(,funSurrogate,lower,upper,control$optimizerControl) #todo return optimizerControl to allow memory?
@@ -329,5 +340,5 @@ spotLoop <- function(x,y,fun,lower,upper,control,...){
   }
     
   indexBest <- which.min(y)
-  list(xbest=x[indexBest,,drop=FALSE],ybest=y[indexBest,,drop=FALSE],x=x, y=y, count=count,msg="budget exhausted",modelFit=modelFit)
+  list(xbest=x[indexBest,,drop=FALSE],ybest=y[indexBest,,drop=FALSE],x=x, y=y, count=count,msg="budget exhausted",modelFit=modelFit, "loggedUncertainties"= loggedUncertainties)
 }	
