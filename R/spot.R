@@ -227,7 +227,8 @@ list(
 		## (e.g., based on OCBA). The model itself should handle repeated samples.
     ## The exception from this rule should be if noise==FALSE, in that case, duplicates are removed.
 		## (?) TODO -> what if only one duplicate suggested -> will be suggested again in next iteration?
-	infillCriterion = NULL ## By default no infillCriterion is used
+	infillCriterion = NULL, ## By default no infillCriterion is used,
+    logUncertainties = F
   )
 }
 
