@@ -128,10 +128,9 @@ vectorAdaptedSE <- function(sOld, newData, x){
     dm <- as.matrix(dist(x))
     f <- function(xx)1/mean(1/xx[xx>0])
     sc <- mean(apply(dm,1,f))
-    #xx <- seq(from=0,by=0.001,to=1)
-    df <- function(x){
+    df <- function(newData){
         ##all distance
-        d <- abs((x-xo))
+        d <- abs((newData-x))
         1/ (mean(1/d)*sc)
     }
     return(sOld*sapply(newData,df))
