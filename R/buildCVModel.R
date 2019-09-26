@@ -124,6 +124,19 @@ distanceAdaptedSE <- function(sOld, newData, x){
     sOld * colSums(t(dv) * (dmi%*%t(dv))) * 2
 }
 
+vectorAdaptedSE <- function(sOld, newData, x){
+    dm <- as.matrix(dist(x))
+    f <- function(xx)1/mean(1/xx[xx>0])
+    sc <- mean(apply(dm,1,f))
+    #xx <- seq(from=0,by=0.001,to=1)
+    df <- function(x){
+        ##all distance
+        d <- abs((x-xo))
+        1/ (mean(1/d)*sc)
+    }
+    return(sOld*sapply(newData,df))
+}
+
 #' predict.cvModel
 #'
 #' Predict with the cross validated model
@@ -158,6 +171,8 @@ predict.cvModel <- function(object,newdata,...){
             results$s <- linearAdaptedSE(results$s, newdata, object$x)
         }else if(tolower(object$uncertaintyEstimator) == "distance"){
             results$s <- distanceAdaptedSE(results$s, newdata, object$x)
+        }else if(tolower(object$uncertaintyEstimator) == "vector"){
+            results$s <- vectorAdaptedSE(results$s, newdata, object$x)
         }else{
             stop("unrecognized option for modelControl$uncertaintyEstimator")
         }
@@ -170,6 +185,8 @@ predict.cvModel <- function(object,newdata,...){
             results$s <- linearAdaptedSE(results$s, newdata, object$x)
         }else if(tolower(object$uncertaintyEstimator) == "distance"){
             results$s <- distanceAdaptedSE(results$s, newdata, object$x)
+        }else if(tolower(object$uncertaintyEstimator) == "vector"){
+            results$s <- vectorAdaptedSE(results$s, newdata, object$x)
         }else{
             stop("unrecognized option for modelControl$uncertaintyEstimator")
         }
