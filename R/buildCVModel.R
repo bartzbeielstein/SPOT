@@ -26,7 +26,7 @@ buildCVModel <- function(x, y, control=list()){
     con[names(control)] <- control
     control<-con
     
-    if(!useBagging){
+    if(!control$useBagging){
         control$nFolds <- min(control$nFolds, nrow(x))
     }
     
@@ -45,7 +45,7 @@ buildCVModel <- function(x, y, control=list()){
     x <- x[shuffleIndexes,,drop = F]
     y <- y[shuffleIndexes, drop = F]
     
-    if(useBagging){
+    if(control$useBagging){
         createSingleModel <- function(i){
             ind <- sample(1:nrow(x), nrow(x), replace = T)
             ind <- unique(ind)
@@ -135,10 +135,14 @@ vectorAdaptedSE <- function(sOld, newData, x){
     sc <- mean(apply(dm,1,f))
     df <- function(newData){
         ##all distance
-        d <- abs((newData-x))
+        newData <- matrix(newData,nrow = 1)
+        d <- NULL
+        for(i in 1:nrow(x)){
+            d <- c(d,sqrt(sum((newData-x[i,])^2)))
+        }
         1/ (mean(1/d)*sc)
     }
-    return(sOld*sapply(newData,df))
+    return(sOld*apply(newData,1,df))
 }
 
 #' predict.cvModel
