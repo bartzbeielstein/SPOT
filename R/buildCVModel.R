@@ -21,11 +21,14 @@ buildCVModel <- function(x, y, control=list()){
               modellingFunction = buildKriging,
               target = c("y","s"),
               uncertaintyEstimator = "sLinear",
-              eiUseWeightedBudgetSum = F)
+              eiUseWeightedBudgetSum = F, 
+              useBagging = T)
     con[names(control)] <- control
     control<-con
     
-    control$nFolds <- min(control$nFolds, nrow(x))
+    if(!useBagging){
+        control$nFolds <- min(control$nFolds, nrow(x))
+    }
     
     modellingFunction <- control$modellingFunction
     
@@ -42,25 +45,27 @@ buildCVModel <- function(x, y, control=list()){
     x <- x[shuffleIndexes,,drop = F]
     y <- y[shuffleIndexes, drop = F]
     
-    createSingleModel <- function(i){
-        ind <- sample(1:nrow(x), nrow(x), replace = T)
-        ind <- unique(ind)
-        trainX <- x[ind,, drop=F]
-        trainY <- as.matrix(y[ind])
-        model <- modellingFunction(trainX, trainY, control = control)
-        return(model)
+    if(useBagging){
+        createSingleModel <- function(i){
+            ind <- sample(1:nrow(x), nrow(x), replace = T)
+            ind <- unique(ind)
+            trainX <- x[ind,, drop=F]
+            trainY <- as.matrix(y[ind])
+            model <- modellingFunction(trainX, trainY, control = control)
+            return(model)
+        }
+    }else{
+        # Create nFolds equally sized folds
+        folds <- cut(seq(1,nrow(x)),breaks=control$nFolds,labels=FALSE)
+        
+        createSingleModel <- function(i){
+            leaveOutIndex <- which(folds==i,arr.ind=TRUE)
+            trainX <- x[-leaveOutIndex,, drop=F]
+            trainY <- as.matrix(y[-leaveOutIndex])
+            model <- modellingFunction(trainX, trainY, control = control)
+            return(model)
+        }
     }
-    
-    #Create nFolds equally sized folds
-    #folds <- cut(seq(1,nrow(x)),breaks=control$nFolds,labels=FALSE)
-    
-    #createSingleModel <- function(i){
-    #    leaveOutIndex <- which(folds==i,arr.ind=TRUE)
-    #    trainX <- x[-leaveOutIndex,, drop=F]
-    #    trainY <- as.matrix(y[-leaveOutIndex])
-    #    model <- modellingFunction(trainX, trainY, control = control)
-    #    return(model)
-    #}
     
     cvModel$models <- lapply(1:control$nFolds, createSingleModel)
     cvModel$fullModel <- modellingFunction(cvModel$x, cvModel$y, control = control)
