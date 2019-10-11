@@ -62,8 +62,8 @@ buildRanger <- function(x, y, control=list()){
 	
 	## call ranger, with parameters taken from control
   fit$rangerFit <- do.call(ranger,control)
-	fit$x <- x
-	fit$y <- y
+	fit$x <- as.matrix(x)
+	fit$y <- as.matrix(y)
   class(fit) <- "spotRanger"
   fit
 }
