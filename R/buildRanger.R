@@ -41,7 +41,9 @@
 #' @importFrom ranger ranger
 ###################################################################################################
 buildRanger <- function(x, y, control=list()){ 
-
+    ## Dont pass unwanted arguments in control list to ranger if they are not accepted
+    control <- control[names(control)[names(control) %in% formalArgs(ranger::ranger)]]
+    
 	## to data frame
 	x <- as.data.frame(x)
 	y <- as.data.frame(y)
@@ -81,6 +83,9 @@ buildRanger <- function(x, y, control=list()){
 predict.spotRanger <- function(object,newdata,...){
   if(!all(colnames(newdata) %in% object$pNames))
     colnames(newdata) <- object$pNames
+  if(is.null(colnames(newdata))){
+      colnames(newdata) <- object$pNames 
+  }
   res <- predict(object$rangerFit,newdata,...)$predictions
   list(y=res)
 }
