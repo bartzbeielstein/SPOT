@@ -112,7 +112,7 @@ buildKriging <- function(x, y, control=list()){
 	con<-list(thetaLower=1e-4, thetaUpper=1e2, 
 		types=rep("numeric",npar),
 		algTheta=optimLBFGSB, budgetAlgTheta=200, 
-		optimizeP= FALSE, 
+		optimizeP= FALSE,
 		useLambda=TRUE, lambdaLower = -6, lambdaUpper = 0, 
 		startTheta=NULL, reinterpolate=TRUE, target="y")
 	con[names(control)] <- control
@@ -214,6 +214,7 @@ buildKriging <- function(x, y, control=list()){
 	fit$Psinv <- res$Psinv
 	fit$nevals <- nevals
 	fit$like <- res$NegLnLike
+	fit$returnCrossCor <- FALSE
 	
 	## calculate observed minimum
 	xlist <- split(x, 1:nrow(x))
