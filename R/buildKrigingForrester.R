@@ -468,6 +468,8 @@ predict.kriging <- function(object,newdata,...){
       res$ei <- expectedImprovement(f,s,object$min)
     }    
 	}
+	if(object$returnCrossCor)
+		res$psi <- psi
   res
 }
 
@@ -573,6 +575,8 @@ predictKrigingReinterpolation <- function(object,newdata,...){
       res$ei <- expectedImprovement(f,s,object$min)
     }    
 	}
+	if(object$returnCrossCor)
+		res$psi <- psi
   res
 }
 
