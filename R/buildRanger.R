@@ -53,13 +53,14 @@ buildRanger <- function(x, y, control=list()){
 	fit$pNames <- colnames(x)
 	
 	## formula for control
-	control$formula <- "y ~ . "
+	control$rangerArguments <- list()
+	control$rangerArguments$formula <- "y ~ . "
 	
 	## data into control
-	control$data <- df
+	control$rangerArguments$data <- df
 	
 	## call ranger, with parameters taken from control
-  fit$rangerFit <- do.call(ranger,control)
+  fit$rangerFit <- do.call(ranger,control$rangerArguments)
 	fit$x <- x
 	fit$y <- y
   class(fit) <- "spotRanger"
