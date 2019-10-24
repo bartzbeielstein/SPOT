@@ -99,48 +99,74 @@ maxNearestNeighbourDistance <- function(x){
 #'
 #' @return numeric vector, adapted uncertainty values
 linearAdaptedSE <- function(sOld, newdata, x){
+    ## if newdata is a vector then set nr to 1, transform to matrix
     ifelse(is.null(nrow(newdata)),nr <- 1,nr <- nrow(newdata))
     newdata <- matrix(newdata, nrow = nr)
+    
     if(nr <= 1){
-        for(i in 1:nrow(newdata)){
-            minDist <- min(abs(x-newdata[i]))
-            sOld[i] <- sOld[i] * minDist/max(diff(sort(x)))
-        }
+        ## Single vector
+        minDist <- min(abs(x-newdata))
+        sOld <- sOld * minDist/max(diff(sort(x)))
     }else{
+        ## Matrix of new points
+        
+        ## calculate maximum distance between two nearest neighbours
+        maxNNDistance <- maxNearestNeighbourDistance(x)
+        
         for(i in 1:nrow(newdata)){
+            ## Calculate distances of each new point to all known ones
             dists <- abs(t(t(x)-newdata[i,]))
+            ## find minimum euclidean distance
             minDist <- sqrt(min(apply(dists,1,function(x){sum(x^2)})))
-            sOld[i] <- sOld[i] * minDist/maxNearestNeighbourDistance(x)
+            # Scale uncertainty linearly by current nearest neighbour
+            # to maxNNDistance
+            sOld[i] <- sOld[i] * minDist / maxNNDistance
         }
     }
-    sOld * 2 # ?
+    sOld * 2 # Maximum should already be reached after half way
 }
 
 distanceAdaptedSE <- function(sOld, newData, x){
+    ## Calculate distance matrix of known and unknown points
     mcomp <- rbind(x, newData)
     dm <- as.matrix(dist(mcomp))
+    
+    ## Scale distance matrix with maxNNDistance
     dm <- dm / maxNearestNeighbourDistance(x)
-    #dm <- dm / max(dm[1:nrow(x),1:nrow(x)])
+    
+    ## The distance vector: all distances of the new points
     dv <- t(dm[1:nrow(x),(nrow(x)+1):nrow(dm)])
     
+    ## Take only distance matrix of known points, invert it
     dm <- dm[1:nrow(x),1:nrow(x)]
     dmi <- solve(dm)
     
+    ## original uncertainty is being scaled:
+    ## dV * dM^-1 * dV
+    ## * 2 because maximum should already be reached after half way
     sOld * colSums(t(dv) * (dmi%*%t(dv))) * 2
 }
 
 vectorAdaptedSE <- function(sOld, newData, x){
+    ## Calculate distance matrix of known points
     dm <- as.matrix(dist(x))
+    
+    ## Rowwise Mean distance 
     f <- function(xx)1/mean(1/xx[xx>0])
     sc <- mean(apply(dm,1,f))
+    
+    ## Function for calculating the scaling factor for a single new data point
     df <- function(newData){
-        ##all distance
+        ## Convert to matrix
         newData <- matrix(newData,nrow = 1)
+        
         d <- NULL
         for(i in 1:nrow(x)){
+            ## Euclidean distance to each known point
             d <- c(d,sqrt(sum((newData-x[i,])^2)))
         }
-        1/ (mean(1/d)*sc)
+        ## Scaling factor
+        1/(mean(1/d)*sc)
     }
     return(sOld*apply(newData,1,df))
 }
