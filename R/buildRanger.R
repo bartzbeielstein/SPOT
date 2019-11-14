@@ -30,10 +30,11 @@
 #' points(x,y,col="red",pch=20)
 #' ## Example with extratrees, an interpolating model
 #' fit <- buildRanger(x,y,
-#'                    control=list(replace = F,
-#'                                 sample.fraction=1,
-#'                                 min.node.size = 1,
-#'                                 splitrule = "extratrees"))
+#'                    control=list(rangerArguments = 
+#'                                 list(replace = F,
+#'                                    sample.fraction=1,
+#'                                    min.node.size = 1,
+#'                                    splitrule = "extratrees")))
 #' yt <- predict(fit,data.frame(x=xt))
 #' plot(xt,yt$y,type="l")
 #' points(x,y,col="red",pch=20)
@@ -52,14 +53,18 @@ buildRanger <- function(x, y, control=list()){
 	fit <- list()	
 	fit$pNames <- colnames(x)
 	
-	## formula for control
-	control$formula <- "y ~ . "
+	## if not give, initialize empty argument list for ranger
+	if(is.null(control$rangerArguments))
+		control$rangerArguments <- list()
+		
+	## formula for control		
+	control$rangerArguments$formula <- "y ~ . "
 	
 	## data into control
-	control$data <- df
+	control$rangerArguments$data <- df
 	
 	## call ranger, with parameters taken from control
-  fit$rangerFit <- do.call(ranger,control)
+  fit$rangerFit <- do.call(ranger,control$rangerArguments)
 	fit$x <- x
 	fit$y <- y
   class(fit) <- "spotRanger"
