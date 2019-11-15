@@ -1,4 +1,3 @@
-
 ###################################################################################
 #' Build Kriging Model
 #'
@@ -112,9 +111,12 @@ buildKriging <- function(x, y, control=list()){
 	con<-list(thetaLower=1e-4, thetaUpper=1e2, 
 		types=rep("numeric",npar),
 		algTheta=optimLBFGSB, budgetAlgTheta=200, 
-		optimizeP= FALSE,
+		optimizeP= FALSE, 
 		useLambda=TRUE, lambdaLower = -6, lambdaUpper = 0, 
-		startTheta=NULL, reinterpolate=TRUE, target="y")
+		startTheta=NULL, reinterpolate=TRUE, target="y",
+		globalInitialBudget = NULL,
+		globalBudget = NULL,
+		eiUseWeightedBudgetSum = F)
 	con[names(control)] <- control
 	control<-con
 	
@@ -159,7 +161,7 @@ buildKriging <- function(x, y, control=list()){
 		}
 	}
 	
-	if(fit$optimizeP){ # optimize p
+	f(fit$optimizeP){ # optimize p
 		LowerTheta <- c(LowerTheta, rep(1,k)*0.01)
 		UpperTheta <- c(UpperTheta, rep(1,k)*2)		
 		x3 <- rep(1,k)* 1.9 #start values for p
@@ -217,14 +219,18 @@ buildKriging <- function(x, y, control=list()){
 	fit$returnCrossCor <- FALSE
 	
 	## calculate observed minimum
-	xlist <- split(x, 1:nrow(x))
-	uniquex <- unique(xlist)
-	ymean <- NULL
-	for(xi in uniquex){
-		ind <- xlist %in% list(xi)
-		ymean <- c(ymean, mean(y[ind]))
-	}	
-  fit$min <- min(ymean)
+	if(any(duplicated(x))){
+	    xlist <- split(x, 1:nrow(x))
+	    uniquex <- unique(xlist)
+	    ymean <- NULL
+	    for(xi in uniquex){
+	        ind <- xlist %in% list(xi)
+	        ymean <- c(ymean, mean(y[ind]))
+	    }	
+	    fit$min <- min(ymean)
+	}else{
+	    fit$min <- min(y)
+	}
 		
 	class(fit)<- "kriging"
 	fit
@@ -447,7 +453,7 @@ predict.kriging <- function(object,newdata,...){
   psi <- matrix(0,k,n)
 	for (i in 1:nvar){ #todo nnn number variables 
 	  #psi[,i] <- colSums(theta*(abs(AX[i,]-t(x))^p))
-	  tmp <- expand.grid(AX[,i],x[,i])
+	  tmp <- expand.grid.jc(AX[,i],x[,i])
     if(object$types[i]=="factor"){
       tmp <- as.numeric(tmp[,1]!=tmp[,2])^p[i]
     }else{
@@ -466,14 +472,18 @@ predict.kriging <- function(object,newdata,...){
 		s <- sqrt(abs(SSqr))
     res$s <- s
     if(any(object$target == "ei")){
-      res$ei <- expectedImprovement(f,s,object$min)
-    }    
+        res$ei <- infillExpectedImprovement(list("y" = f, "s" = s),object)
+    }   
 	}
 	if(object$returnCrossCor)
 		res$psi <- psi
   res
 }
 
+expand.grid.jc <- function(seq1,seq2) {
+    cbind(Var1 = rep.int(seq1, length(seq2)), 
+          Var2 = rep.int(seq2, rep.int(length(seq1),length(seq2))))
+}
 
 ###################################################################################
 #' Predict Kriging Model (Re-interpolating)
@@ -548,7 +558,13 @@ predictKrigingReinterpolation <- function(object,newdata,...){
 	psi <- matrix(0,k,n)
 	for (i in 1:nvar){ #todo nnn number variables 
 	  #psi[,i] <- colSums(theta*(abs(AX[i,]-t(x))^p))
-	  tmp <- expand.grid(AX[,i],x[,i])
+	  
+	    
+	  ### TEST FR
+	  #tmp <- expand.grid(AX[,i],x[,i])
+	  tmp <- expand.grid.jc(AX[,i],x[,i])
+	    
+	  
 	  if(object$types[i]=="factor"){
 	    tmp <- as.numeric(tmp[,1]!=tmp[,2])^p[i]
 	  }else{
@@ -573,7 +589,7 @@ predictKrigingReinterpolation <- function(object,newdata,...){
 		s <- sqrt(abs(SSqr))
     res$s <- s
     if(any(object$target == "ei")){
-      res$ei <- expectedImprovement(f,s,object$min)
+        res$ei <- infillExpectedImprovement(list("y" = f, "s" = s),object)
     }    
 	}
 	if(object$returnCrossCor)
@@ -620,4 +636,3 @@ print.kriging <- function(x,...){
 	cat("\n")	
 	cat("------------------------\n")
 }
-

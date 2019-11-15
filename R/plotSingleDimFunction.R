@@ -31,14 +31,14 @@ plotSingleDimFunction <- function(evalFun, lower, upper, target, points){
     
     if(!withSE){
         ggplot(data=data.frame(x,y), aes(x=x, y=y, group=1)) +
-            geom_line() #+ 
-            #geom_point(data = points, 
-            #           mapping = aes(x = points[, 1], y = points[,ncol(points)]))
+            geom_line() + 
+            geom_point(data = points, 
+                       mapping = aes(x = points[, 1], y = points[,ncol(points)]))
     }else{
         ggplot(data=data.frame(x,s), aes(x=x)) +
             geom_line(aes(y = y)) + 
-            geom_ribbon(aes(ymax=y + s, ymin=y - s), fill="pink", alpha=.5)# + 
-            #geom_point(data = points, 
-            #                mapping = aes(x = points[, 1], y = points[,ncol(points)]))
+            geom_ribbon(aes(ymax=y + s, ymin=y - s), fill="pink", alpha=.5) + 
+            geom_point(data = points, 
+                            mapping = aes(x = points[, 1], y = points[,ncol(points)]))
     }
 }

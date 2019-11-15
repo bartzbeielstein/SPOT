@@ -20,11 +20,15 @@ buildCVModel <- function(x, y, control=list()){
     con<-list(nFolds = 10,
               modellingFunction = buildKriging,
               target = c("y","s"),
-              uncertaintyEstimator = "sLinear")
+              uncertaintyEstimator = "sLinear",
+              eiUseWeightedBudgetSum = F, 
+              useBagging = T)
     con[names(control)] <- control
     control<-con
     
-    control$nFolds <- min(control$nFolds, nrow(x))
+    if(!control$useBagging){
+        control$nFolds <- min(control$nFolds, nrow(x))
+    }
     
     modellingFunction <- control$modellingFunction
     
@@ -41,18 +45,30 @@ buildCVModel <- function(x, y, control=list()){
     x <- x[shuffleIndexes,,drop = F]
     y <- y[shuffleIndexes, drop = F]
     
-    #Create nFolds equally sized folds
-    folds <- cut(seq(1,nrow(x)),breaks=control$nFolds,labels=FALSE)
-    
-    createSingleModel <- function(i){
-        leaveOutIndex <- which(folds==i,arr.ind=TRUE)
-        trainX <- x[-leaveOutIndex,, drop=F]
-        trainY <- as.matrix(y[-leaveOutIndex])
-        model <- modellingFunction(trainX, trainY, control = control)
-        return(model)
+    if(control$useBagging){
+        createSingleModel <- function(i){
+            ind <- sample(1:nrow(x), nrow(x), replace = T)
+            ind <- unique(ind)
+            trainX <- x[ind,, drop=F]
+            trainY <- as.matrix(y[ind])
+            model <- modellingFunction(trainX, trainY, control = control)
+            return(model)
+        }
+    }else{
+        # Create nFolds equally sized folds
+        folds <- cut(seq(1,nrow(x)),breaks=control$nFolds,labels=FALSE)
+        
+        createSingleModel <- function(i){
+            leaveOutIndex <- which(folds==i,arr.ind=TRUE)
+            trainX <- x[-leaveOutIndex,, drop=F]
+            trainY <- as.matrix(y[-leaveOutIndex])
+            model <- modellingFunction(trainX, trainY, control = control)
+            return(model)
+        }
     }
     
     cvModel$models <- lapply(1:control$nFolds, createSingleModel)
+    cvModel$fullModel <- modellingFunction(cvModel$x, cvModel$y, control = control)
     class(cvModel)<- "cvModel"
     return(cvModel)
 }
@@ -70,7 +86,7 @@ maxNearestNeighbourDistance <- function(x){
         currentDists <- abs(t(t(x[-i,, drop=F])-x[i,]))
         minDists <- c(minDists,sqrt(min(apply(currentDists,1,function(x){sum(x^2)}))))
     }
-    return(sqrt(max(minDists)))
+    return(max(minDists))
 }
 
 #' linearAdaptedSE
@@ -83,21 +99,76 @@ maxNearestNeighbourDistance <- function(x){
 #'
 #' @return numeric vector, adapted uncertainty values
 linearAdaptedSE <- function(sOld, newdata, x){
+    ## if newdata is a vector then set nr to 1, transform to matrix
     ifelse(is.null(nrow(newdata)),nr <- 1,nr <- nrow(newdata))
     newdata <- matrix(newdata, nrow = nr)
+    
     if(nr <= 1){
-        for(i in 1:nrow(newdata)){
-            minDist <- min(abs(x-newdata[i]))
-            sOld[i] <- sOld[i] * minDist/max(diff(sort(x)))
-        }
+        ## Single vector
+        minDist <- min(abs(x-newdata))
+        sOld <- sOld * minDist/max(diff(sort(x)))
     }else{
+        ## Matrix of new points
+        
+        ## calculate maximum distance between two nearest neighbours
+        maxNNDistance <- maxNearestNeighbourDistance(x)
+        
         for(i in 1:nrow(newdata)){
+            ## Calculate distances of each new point to all known ones
             dists <- abs(t(t(x)-newdata[i,]))
+            ## find minimum euclidean distance
             minDist <- sqrt(min(apply(dists,1,function(x){sum(x^2)})))
-            sOld[i] <- sOld[i] * minDist/maxNearestNeighbourDistance(x)
+            # Scale uncertainty linearly by current nearest neighbour
+            # to maxNNDistance
+            sOld[i] <- sOld[i] * minDist / maxNNDistance
         }
     }
-    sOld * 2 # ?
+    sOld * 2 # Maximum should already be reached after half way
+}
+
+distanceAdaptedSE <- function(sOld, newData, x){
+    ## Calculate distance matrix of known and unknown points
+    mcomp <- rbind(x, newData)
+    dm <- as.matrix(dist(mcomp))
+    
+    ## Scale distance matrix with maxNNDistance
+    dm <- dm / maxNearestNeighbourDistance(x)
+    
+    ## The distance vector: all distances of the new points
+    dv <- t(dm[1:nrow(x),(nrow(x)+1):nrow(dm)])
+    
+    ## Take only distance matrix of known points, invert it
+    dm <- dm[1:nrow(x),1:nrow(x)]
+    dmi <- solve(dm)
+    
+    ## original uncertainty is being scaled:
+    ## dV * dM^-1 * dV
+    ## * 2 because maximum should already be reached after half way
+    sOld * colSums(t(dv) * (dmi%*%t(dv))) * 2
+}
+
+vectorAdaptedSE <- function(sOld, newData, x){
+    ## Calculate distance matrix of known points
+    dm <- as.matrix(dist(x))
+    
+    ## Rowwise Mean distance 
+    f <- function(xx)1/mean(1/xx[xx>0])
+    sc <- mean(apply(dm,1,f))
+    
+    ## Function for calculating the scaling factor for a single new data point
+    df <- function(newData){
+        ## Convert to matrix
+        newData <- matrix(newData,nrow = 1)
+        
+        d <- NULL
+        for(i in 1:nrow(x)){
+            ## Euclidean distance to each known point
+            d <- c(d,sqrt(sum((newData-x[i,])^2)))
+        }
+        ## Scaling factor
+        1/(mean(1/d)*sc)
+    }
+    return(sOld*apply(newData,1,df))
 }
 
 #' predict.cvModel
@@ -122,26 +193,35 @@ predict.cvModel <- function(object,newdata,...){
     results <- list()
     results$all <- sapply(object$models,predictSingle)
     
+    results$y <- predict(object$fullModel,newdata)$y
+    
     ifelse(is.null(nrow(results$all)),nr <- 1,nr <- nrow(results$all))
     if(nr > 1){
-        results$y <- apply(results$all,1,mean)
-        funSE <- function(x){
-            sd(x)/sqrt(length(x))
-        }
-        results$s <- apply(results$all,1 , funSE)
+        results$s <- apply(results$all,1 , sd)
         
-        if(tolower(object$uncertaintyEstimator) == "slinear"){
+        if(tolower(object$uncertaintyEstimator) == "s"){
+            return(results)
+        }else if(tolower(object$uncertaintyEstimator) == "slinear"){
             results$s <- linearAdaptedSE(results$s, newdata, object$x)
-        }else if(!(tolower(object$uncertaintyEstimator) %in% c("s", "slinear"))){
+        }else if(tolower(object$uncertaintyEstimator) == "distance"){
+            results$s <- distanceAdaptedSE(results$s, newdata, object$x)
+        }else if(tolower(object$uncertaintyEstimator) == "vector"){
+            results$s <- vectorAdaptedSE(results$s, newdata, object$x)
+        }else{
             stop("unrecognized option for modelControl$uncertaintyEstimator")
         }
     }else{
-        results$y <- mean(results$all)
-        results$s <- sd(results$all)/sqrt(length(results$all))
+        results$s <- sd(results$all)
         
-        if(tolower(object$uncertaintyEstimator) == "slinear"){
+        if(tolower(object$uncertaintyEstimator) == "s"){
+            return(results)
+        }else if(tolower(object$uncertaintyEstimator) == "slinear"){
             results$s <- linearAdaptedSE(results$s, newdata, object$x)
-        }else if(!(tolower(object$uncertaintyEstimator) %in% c("s", "slinear"))){
+        }else if(tolower(object$uncertaintyEstimator) == "distance"){
+            results$s <- distanceAdaptedSE(results$s, newdata, object$x)
+        }else if(tolower(object$uncertaintyEstimator) == "vector"){
+            results$s <- vectorAdaptedSE(results$s, newdata, object$x)
+        }else{
             stop("unrecognized option for modelControl$uncertaintyEstimator")
         }
     }
