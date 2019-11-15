@@ -292,21 +292,9 @@ spotLoop <- function(x,y,fun,lower,upper,control,parallelCall = F,...){
     ## Main Loop
     modelFit <- NA
     
-    
-    ## Prevent exceeding the budget:
-    xnew <- xnew[1:min(max(control$funEvals-count,1),nrow(xnew)),,drop=FALSE]
-		
-    if(parallelCall){
-        return(xnew)
-    }
-    
-		## Evaluation with objective function
-		ynew <- objectiveFunctionEvaluation(x=x,xnew=xnew,fun=fun,seedFun=control$seedFun,noise=control$noise,...)
-
     if(control$saveAllModels){
         allModels <- list()
     }
-
     
     while(count < control$funEvals){ 
         ## Model building 
@@ -345,6 +333,10 @@ spotLoop <- function(x,y,fun,lower,upper,control,parallelCall = F,...){
         
         ## Prevent exceeding the budget:
         xnew <- xnew[1:min(max(control$funEvals-count,1),nrow(xnew)),,drop=FALSE]
+        
+        if(parallelCall){
+            return(xnew)
+        }
         
         ## Evaluation with objective function
         ynew <- objectiveFunctionEvaluation(x=x,xnew=xnew,fun=fun,seedFun=control$seedFun,noise=control$noise,...)

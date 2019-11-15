@@ -161,7 +161,7 @@ buildKriging <- function(x, y, control=list()){
 		}
 	}
 	
-	f(fit$optimizeP){ # optimize p
+	if(fit$optimizeP){ # optimize p
 		LowerTheta <- c(LowerTheta, rep(1,k)*0.01)
 		UpperTheta <- c(UpperTheta, rep(1,k)*2)		
 		x3 <- rep(1,k)* 1.9 #start values for p

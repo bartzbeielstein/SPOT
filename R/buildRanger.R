@@ -45,32 +45,28 @@ buildRanger <- function(x, y, control=list()){
     ## Dont pass unwanted arguments in control list to ranger if they are not accepted
     control <- control[names(control)[names(control) %in% formalArgs(ranger::ranger)]]
     
-	## to data frame
-	x <- as.data.frame(x)
-	y <- as.data.frame(y)
-	colnames(y) <- "y"
-	df <- cbind(y,x)
-	
-	## store parameter names
-	fit <- list()	
-	fit$pNames <- colnames(x)
-	
-	## if not give, initialize empty argument list for ranger
-	if(is.null(control$rangerArguments))
-		control$rangerArguments <- list()
-		
-	## formula for control		
-	control$rangerArguments$formula <- "y ~ . "
-	
-	## data into control
-	control$rangerArguments$data <- df
-	
-	## call ranger, with parameters taken from control
-  fit$rangerFit <- do.call(ranger,control)
-	fit$x <- as.matrix(x)
-	fit$y <- as.matrix(y)
-  class(fit) <- "spotRanger"
-  fit
+    ## to data frame
+    x <- as.data.frame(x)
+    y <- as.data.frame(y)
+    colnames(y) <- "y"
+    df <- cbind(y,x)
+    
+    ## store parameter names
+    fit <- list()	
+    fit$pNames <- colnames(x)
+    
+    ## formula for control
+    control$formula <- "y ~ . "
+    
+    ## data into control
+    control$data <- df
+    
+    ## call ranger, with parameters taken from control
+    fit$rangerFit <- do.call(ranger,control)
+    fit$x <- as.matrix(x)
+    fit$y <- as.matrix(y)
+    class(fit) <- "spotRanger"
+    fit
 }
 
 ###################################################################################################
