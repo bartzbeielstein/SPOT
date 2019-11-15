@@ -109,7 +109,7 @@ spot <- function(x=NULL,fun, #mostly, fun must have format y=f(x,...).
 		lower,upper,control=list(),...){
     
     #Initial Input Checking
-    initialInputCheck(x,fun,lower,upper,control)
+    initialInputCheck(x,lower,upper,control)
     
 	## default settings
 	dimension <- length(lower)
@@ -270,10 +270,10 @@ list(
 #' res2$ybest
 #' @export
 ###################################################################################################
-spotLoop <- function(x,y,fun,lower,upper,control,...){
+spotLoop <- function(x,y,fun,lower,upper,control,parallelCall = F,...){
     
     #Initial Input Checking
-    initialInputCheck(x,fun,lower,upper,control, inSpotLoop = T)
+    initialInputCheck(x,lower,upper,control, inSpotLoop = T)
     
 	## default settings
 	dimension <- length(lower)
@@ -312,6 +312,10 @@ spotLoop <- function(x,y,fun,lower,upper,control,...){
     ## Prevent exceeding the budget:
     xnew <- xnew[1:min(max(control$funEvals-count,1),nrow(xnew)),,drop=FALSE]
 		
+    if(parallelCall){
+        return(xnew)
+    }
+    
 		## Evaluation with objective function
 		ynew <- objectiveFunctionEvaluation(x=x,xnew=xnew,fun=fun,seedFun=control$seedFun,noise=control$noise,...)
     

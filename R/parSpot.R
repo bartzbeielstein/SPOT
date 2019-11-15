@@ -1,9 +1,10 @@
 
 parSpot <- function(x=NULL, fun, 
-                    lower, upper, sequentialControlList = list(), parallelControlLists = list(), cl = NULL, nCores = NULL, ...){
+                    lower, upper, sequentialControlList = list(), 
+                    parallelControlLists = list(list()), cl = NULL, nCores = NULL, ...){
     
     #Initial Input Checking
-    initialInputCheck(x,fun,lower,upper,sequentialControlList)
+    initialInputCheck(x,lower,upper,sequentialControlList)
     
     ## Set up a parallel cluster if none is provided previously
     if(is.null(cl)){
@@ -33,27 +34,38 @@ parSpot <- function(x=NULL, fun,
     
     #######
     ## 
-    ## After the evaluation of the initial design each spot control should be ran iteration by iteration in parallel
+    ## After the evaluation of the initial design each spot control should be run iteration by iteration in parallel
     ## 
     #######
     
-    parallelControlLists <- lapply(parallelControlLists, function(cList){spotFillControlList(cList, dimension)})
+    if(length(parallelControlLists) == 0){
+        parallelControlLists <- list(spotFillControlList(list(), dimension))
+    }else if(any(sapply(parallelControlLists, typeof) != "list")){
+        error("parallelControlLists should be a list of lists.")
+    }else{
+        parallelControlLists <- lapply(parallelControlLists, function(cList){spotFillControlList(cList, dimension)})
+    }
     
     totalBudget <- sequentialControlList$funEvals
     
     parallelSpotResults <- NULL
+    parallel::clusterCall(cl = cl ,fun = function(){
+        require(SPOT)
+    })
+    #vars <- ls()
+    #vars <- vars[vars!="cl"]
+    #parallel::clusterExport(cl = cl,varlist = ls())
     while((nrow(x) + length(parallelControlLists)) <= totalBudget){
         doParallelSpotIter <- function(cList){
             cList$funEvals <- nrow(x) + 1
-            spotLoop(x=x,y=y,fun=fun,lower=lower,upper=upper,control=cList, ...)
+            spotLoop(x=x,y=y,fun=function(x){x},lower=lower,upper=upper,control=cList,parallelCall = T, ...)
         }
         parallelSpotResults <- parallel::parLapply(cl = cl, parallelControlLists, doParallelSpotIter)
-        
-        amntRows <- nrow(x)
-        for(res in parallelSpotResults){
-            x <- rbind(x, res$x[-c(1:amntRows), , drop=F])
-            y <- rbind(y, res$y[-c(1:amntRows), , drop=F])
-        }
+        newX <- do.call(rbind.data.frame, parallelSpotResults)
+        newY <- objectiveFunctionEvaluation(x=x,xnew=newX,fun=fun,seedFun=sequentialControlList$seedFun,
+                                            noise=sequentialControlList$noise,...)
+        x <- rbind(x, newX)
+        y <- rbind(y, newY)
     }
     
     indexBest <- which.min(y)
