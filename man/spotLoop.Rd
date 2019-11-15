@@ -4,7 +4,7 @@
 \alias{spotLoop}
 \title{Sequential Parameter Optimization Main Loop}
 \usage{
-spotLoop(x, y, fun, lower, upper, control, ...)
+spotLoop(x, y, fun, lower, upper, control, parallelCall = F, ...)
 }
 \arguments{
 \item{x}{are the known candidate solutions that the SPOT loop is started with, specified as a matrix. One row for each point, and one column for each optimized parameter.}

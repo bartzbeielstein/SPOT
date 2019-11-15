@@ -37,10 +37,11 @@ plot(xt,yt$y,type="l")
 points(x,y,col="red",pch=20)
 ## Example with extratrees, an interpolating model
 fit <- buildRanger(x,y,
-                   control=list(replace = F,
-                                sample.fraction=1,
-                                min.node.size = 1,
-                                splitrule = "extratrees"))
+                   control=list(rangerArguments = 
+                                list(replace = F,
+                                   sample.fraction=1,
+                                   min.node.size = 1,
+                                   splitrule = "extratrees")))
 yt <- predict(fit,data.frame(x=xt))
 plot(xt,yt$y,type="l")
 points(x,y,col="red",pch=20)

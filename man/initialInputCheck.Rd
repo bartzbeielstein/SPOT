@@ -4,13 +4,11 @@
 \alias{initialInputCheck}
 \title{Initial Input Check of Spot Configuration}
 \usage{
-initialInputCheck(x = NULL, fun, lower, upper, control = list(),
+initialInputCheck(x = NULL, lower, upper, control = list(),
   inSpotLoop = F)
 }
 \arguments{
 \item{x}{is an optional start point (or set of start points), specified as a matrix. One row for each point, and one column for each optimized parameter.}
-
-\item{fun}{is the objective function. It should receive a matrix x and return a matrix y. In case the function uses external code and is noisy, an additional seed parameter may be used, see the \code{control$seedFun} argument below for details.}
 
 \item{lower}{is a vector that defines the lower boundary of search space. This determines also the dimensionality of the problem.}
 
