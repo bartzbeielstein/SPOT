@@ -4,8 +4,7 @@
 \alias{print.spotLOESS}
 \title{Print method for loess model}
 \usage{
-\method{print}{spotLOESS}(x, digits = max(3L, getOption("digits") - 3L),
-  ...)
+\method{print}{spotLOESS}(x, digits = max(3L, getOption("digits") - 3L), ...)
 }
 \arguments{
 \item{...}{not used}

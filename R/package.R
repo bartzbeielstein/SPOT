@@ -27,8 +27,8 @@
 #' \tabular{ll}{
 #' Package: \tab SPOT\cr
 #' Type: \tab Package\cr
-#' Version: \tab 2.0.3\cr
-#' Date: \tab 2018-05-14\cr
+#' Version: \tab 2.0.5\cr
+#' Date: \tab 2019-12-05\cr
 #' License: \tab GPL (>= 2)\cr
 #' LazyLoad: \tab yes\cr
 #' }

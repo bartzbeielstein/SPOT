@@ -53,8 +53,8 @@ Modelling, Technical University of Denmark, Copenhagen, Denmark, 2002.
 \code{\link{buildKrigingDACE}}
 }
 \author{
-The authors of the original DACE Matlab toolbox \url{http://www2.imm.dtu.dk/projects/dace/} 
-are Hans Bruun Nielsen \email{hbn@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+The authors of the original DACE Matlab toolbox \ 
+are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 Additional code for generalization to different models by Tobias Wagner \email{wagner@isf.de}. \cr 
 Porting and adaptation to R and further extensions by Martin Zaefferer \email{martin.zaefferer@fh-koeln.de}.
 }

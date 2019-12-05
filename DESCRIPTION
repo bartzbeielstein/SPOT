@@ -24,8 +24,8 @@ Description: A set of tools for model based optimization and tuning of
     surrogate models for the purpose of efficient optimization. The main goal is
     to ease the burden of objective function evaluations, when a single evaluation
     requires a significant amount of resources.
-Version: 2.0.4
-Date: 2019-05-17
+Version: 2.0.5
+Date: 2019-12-05
 Depends:
     R (>= 3.0.0)
 Imports:
@@ -42,7 +42,7 @@ Imports:
 	rsm,
 	nloptr,
 	ggplot2
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Suggests:
     testthat,
     batchtools

@@ -4,8 +4,18 @@
 \alias{spotAlgEsIndividualInitial}
 \title{Individual Initialization}
 \usage{
-spotAlgEsIndividualInitial(s, dimension, n, noise = 0, fName, gen,
-  low = -1, high = 1, des, ...)
+spotAlgEsIndividualInitial(
+  s,
+  dimension,
+  n,
+  noise = 0,
+  fName,
+  gen,
+  low = -1,
+  high = 1,
+  des,
+  ...
+)
 }
 \arguments{
 \item{s}{sigma, step size}

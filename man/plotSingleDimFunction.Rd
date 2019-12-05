@@ -4,7 +4,7 @@
 \alias{plotSingleDimFunction}
 \title{plotSingleDimFunction}
 \usage{
-plotSingleDimFunction(evalFun, lower, upper, target, points)
+plotSingleDimFunction(evalFun, lower, upper, target)
 }
 \arguments{
 \item{lower}{boundary for x1 and x2 (defaults to \code{c(0,0)}).}

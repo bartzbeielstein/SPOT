@@ -4,8 +4,13 @@
 \alias{designLHDNorm}
 \title{Normalized LHD Design}
 \usage{
-designLHDNorm(dim, size, calcMinDistance = FALSE, nested = NULL,
-  inequalityConstraint = NULL)
+designLHDNorm(
+  dim,
+  size,
+  calcMinDistance = FALSE,
+  nested = NULL,
+  inequalityConstraint = NULL
+)
 }
 \arguments{
 \item{dim}{number, dimension of the problem (will be no. of columns of the result matrix)}

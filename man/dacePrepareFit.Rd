@@ -27,7 +27,7 @@ Prepares a list with relevant model options and settings based on user choice an
 \code{\link{buildKrigingDACE}}
 }
 \author{
-The authors of the original DACE Matlab code are Hans Bruun Nielsen \email{hbn@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+The authors of the original DACE Matlab code are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 Extension of the Matlab by Tobias Wagner \email{wagner@isf.de}. \cr 
 Porting and adaptation to R and further extensions by Martin Zaefferer \email{martin.zaefferer@fh-koeln.de}.
 }

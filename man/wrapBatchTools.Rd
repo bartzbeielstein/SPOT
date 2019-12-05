@@ -4,9 +4,12 @@
 \alias{wrapBatchTools}
 \title{wrapBatchTools}
 \usage{
-wrapBatchTools(fun, reg = NULL,
+wrapBatchTools(
+  fun,
+  reg = NULL,
   clusterFunction = batchtools::makeClusterFunctionsInteractive(),
-  resources = NULL)
+  resources = NULL
+)
 }
 \arguments{
 \item{fun}{function to wrap}

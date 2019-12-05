@@ -4,13 +4,34 @@
 \alias{spotAlgEs}
 \title{Evolution Strategy Implementation}
 \usage{
-spotAlgEs(mue = 10, nu = 10, dimension = 2, mutation = 2,
-  sigmaInit = 1, nSigma = 1, tau0 = 0, tau = 1, rho = "bi",
-  sel = -1, stratReco = 1, objReco = 2, maxGen = Inf,
-  maxIter = Inf, seed = 1, noise = 0, fName = funSphere,
-  lowerLimit = -1, upperLimit = 1, verbosity = 0,
-  plotResult = FALSE, logPlotResult = FALSE, sigmaRestart = 0.1,
-  preScanMult = 1, globalOpt = NULL, ...)
+spotAlgEs(
+  mue = 10,
+  nu = 10,
+  dimension = 2,
+  mutation = 2,
+  sigmaInit = 1,
+  nSigma = 1,
+  tau0 = 0,
+  tau = 1,
+  rho = "bi",
+  sel = -1,
+  stratReco = 1,
+  objReco = 2,
+  maxGen = Inf,
+  maxIter = Inf,
+  seed = 1,
+  noise = 0,
+  fName = funSphere,
+  lowerLimit = -1,
+  upperLimit = 1,
+  verbosity = 0,
+  plotResult = FALSE,
+  logPlotResult = FALSE,
+  sigmaRestart = 0.1,
+  preScanMult = 1,
+  globalOpt = NULL,
+  ...
+)
 }
 \arguments{
 \item{mue}{number of parents, default is \code{10}}

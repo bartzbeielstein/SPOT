@@ -27,8 +27,8 @@
 #'
 #' @seealso \code{\link{predict.dace}}
 #'
-#' @author The authors of the original DACE Matlab toolbox \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab toolbox
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Extension of the Matlab code by Tobias Wagner \email{wagner@@isf.de}. \cr 
 #' Porting and adaptation to R and further extensions by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
@@ -256,7 +256,7 @@ daceLikelihood <- function (theta, para, nugget){
 #'
 #' @return a list with several model or problem specific settings and parameters
 #'
-#' @author The authors of the original DACE Matlab code are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Extension of the Matlab by Tobias Wagner \email{wagner@@isf.de}. \cr 
 #' Porting and adaptation to R and further extensions by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
@@ -364,7 +364,7 @@ daceEvalFit <- function (theta, para){
 #' 		\code{Ft} Decorrelated regression matrix\cr
 #' 		\code{G} From QR factorization: Ft = Q*t(G)\cr
 #'
-#' @author The authors of the original DACE Matlab code are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Extension of the Matlab code by Tobias Wagner \email{wagner@@isf.de}. \cr 
 #' Porting and adaptation to R and further extensions by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
@@ -441,7 +441,7 @@ repmat <- function(a,n,m) {kronecker(matrix(1,n,m),a)}
 #' 		\item{\code{Ft}}{ Decorrelated regression matrix}
 #' 		\item{\code{G}}{ From QR factorization: Ft = Q*t(G)\cr}
 #'
-#' @author The authors of the original DACE Matlab code are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Extension of the Matlab code by Tobias Wagner \email{wagner@@isf.de}. \cr 
 #' Porting and adaptation to R and further extensions by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
@@ -519,8 +519,8 @@ daceObjfunc <- function(theta, para, what="all"){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Extension of the Matlab code by Tobias Wagner \email{wagner@@isf.de}. \cr 
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
@@ -576,8 +576,8 @@ corrnoisygauss = function(theta, d , ret="all"){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code 
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
 #' @export
@@ -626,8 +626,8 @@ corrgauss <- function(theta,d,ret="all"){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code 
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Extension of the Matlab code by Tobias Wagner \email{wagner@@isf.de}. \cr 
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
@@ -686,8 +686,8 @@ corrnoisykriging = function(theta, d, ret="all"){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Extension of the Matlab code by Tobias Wagner \email{wagner@@isf.de}. \cr 
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
@@ -735,8 +735,8 @@ corrkriging <- function(theta,d,ret="all"){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code \ 
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
 #' @export
@@ -800,8 +800,8 @@ corrcubic <- function(theta,d , ret="all"){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
 #' @export
@@ -848,8 +848,8 @@ correxp <- function(theta,d,ret="all"){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code 
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
 #' @export
@@ -901,8 +901,8 @@ correxpg <- function(theta,d,ret="all"){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code 
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
 #' @export
@@ -962,8 +962,8 @@ corrlin <- function(theta,d , ret="all"){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code 
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
 #' @export
@@ -1032,8 +1032,8 @@ corrspherical <- function(theta,d , ret="all"){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code 
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
 #' @export
@@ -1110,8 +1110,8 @@ corrspline <- function(theta,d , ret="all"){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
 #' @export
@@ -1148,8 +1148,8 @@ regpoly0 <- function(S,grad=FALSE){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
 #' @export
@@ -1187,8 +1187,8 @@ regpoly1 <- function(S,grad=FALSE){
 #'
 #' @seealso \code{\link{buildKrigingDACE}}
 #'
-#' @author The authors of the original DACE Matlab code \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab code \ 
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Ported to R by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'
 #' @export
@@ -1293,8 +1293,8 @@ print.dace <- function(x,...){
 #'
 #' @seealso \code{\link{buildKrigingDACE}} 
 #'
-#' @author The authors of the original DACE Matlab toolbox \url{http://www2.imm.dtu.dk/projects/dace/} 
-#' are Hans Bruun Nielsen \email{hbn@@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+#' @author The authors of the original DACE Matlab toolbox \ 
+#' are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 #' Additional code for generalization to different models by Tobias Wagner \email{wagner@@isf.de}. \cr 
 #' Porting and adaptation to R and further extensions by Martin Zaefferer \email{martin.zaefferer@@fh-koeln.de}.
 #'

@@ -35,7 +35,7 @@ get all relevant variables of the model.
 \code{\link{buildKrigingDACE}} \code{\link{daceLikelihood}} \code{\link{daceEvalFit}}
 }
 \author{
-The authors of the original DACE Matlab code are Hans Bruun Nielsen \email{hbn@imm.dtu.dk}, Soren Nymand Lophaven and Jacob Sondergaard. \cr
+The authors of the original DACE Matlab code are Hans Bruun Nielsen, Soren Nymand Lophaven and Jacob Sondergaard. \cr
 Extension of the Matlab code by Tobias Wagner \email{wagner@isf.de}. \cr 
 Porting and adaptation to R and further extensions by Martin Zaefferer \email{martin.zaefferer@fh-koeln.de}.
 }

@@ -4,8 +4,14 @@
 \alias{initialInputCheck}
 \title{Initial Input Check of Spot Configuration}
 \usage{
-initialInputCheck(x = NULL, fun, lower, upper, control = list(),
-  inSpotLoop = F)
+initialInputCheck(
+  x = NULL,
+  fun,
+  lower,
+  upper,
+  control = list(),
+  inSpotLoop = F
+)
 }
 \arguments{
 \item{x}{is an optional start point (or set of start points), specified as a matrix. One row for each point, and one column for each optimized parameter.}

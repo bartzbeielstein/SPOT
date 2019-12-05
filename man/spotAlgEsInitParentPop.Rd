@@ -4,8 +4,18 @@
 \alias{spotAlgEsInitParentPop}
 \title{Initialize Parent Population}
 \usage{
-spotAlgEsInitParentPop(sigmaInit, dimension, nSigma, noise, fName, gen,
-  low, high, mue, ...)
+spotAlgEsInitParentPop(
+  sigmaInit,
+  dimension,
+  nSigma,
+  noise,
+  fName,
+  gen,
+  low,
+  high,
+  mue,
+  ...
+)
 }
 \arguments{
 \item{sigmaInit}{initial sigma value (standard deviation)}

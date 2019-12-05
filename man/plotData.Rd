@@ -4,9 +4,18 @@
 \alias{plotData}
 \title{Interpolated plot}
 \usage{
-plotData(x, y, which = 1:2, constant = x[which.min(y), ],
-  model = buildLOESS, modelControl = list(), xlab = c("x1", "x2"),
-  ylab = "y", type = "filled.contour", ...)
+plotData(
+  x,
+  y,
+  which = 1:2,
+  constant = x[which.min(y), ],
+  model = buildLOESS,
+  modelControl = list(),
+  xlab = c("x1", "x2"),
+  ylab = "y",
+  type = "filled.contour",
+  ...
+)
 }
 \arguments{
 \item{x}{independent variables, or input variables. this should be a matrix of at least two columns 

@@ -4,8 +4,14 @@
 \alias{objectiveFunctionEvaluation}
 \title{Objective Function Evaluation}
 \usage{
-objectiveFunctionEvaluation(x = NULL, xnew, fun, seedFun = NA,
-  noise = FALSE, ...)
+objectiveFunctionEvaluation(
+  x = NULL,
+  xnew,
+  fun,
+  seedFun = NA,
+  noise = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{matrix of already known solutions, to determine whether RNG seeds for new solutions need to be incremented.}

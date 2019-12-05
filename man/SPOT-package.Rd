@@ -17,7 +17,7 @@ The resulting data is used to fit a model, which in turn is subject
 to an optimization algorithm, to find the most promising candidate solution(s).
 These are again evaluated, after which the model is updated with the new results.
 This sequential procedure of modeling, optimization and evaluation is iterated
-until the evaluation budget is exhausted.
+until the evaluation budget is exhausted. 
 
 Note, that versions >= 2.0.1 of the package are a complete rewrite of the interfaces and conventions in SPOT.
 The rewritten SPOT package aims to improve the following issues of the older package:\cr

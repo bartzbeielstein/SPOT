@@ -4,12 +4,17 @@
 \alias{funCyclone}
 \title{Objective function - Cyclone Simulation: Barth/Muschelknautz}
 \usage{
-funCyclone(x, deterministic = c(T, T, T), cyclone = list(Da = 1.26, H =
-  2.5, Dt = 0.42, Ht = 0.65, He = 0.6, Be = 0.2), fluid = list(Mu =
-  1.85e-05, Ve = (50/36)/0.12, lambdag = 1/200, Rhop = 2000, Rhof = 1.2,
-  Croh = 0.05), noiseLevel = list(Vp = 0.1, Rhop = 0.05),
-  model = "Barth-Muschelknautz", intervals = c(0, 2, 4, 6, 8, 10, 15,
-  20, 30) * 1e-06, delta = c(0, 0.02, 0.03, 0.05, 0.1, 0.3, 0.3, 0.2))
+funCyclone(
+  x,
+  deterministic = c(T, T, T),
+  cyclone = list(Da = 1.26, H = 2.5, Dt = 0.42, Ht = 0.65, He = 0.6, Be = 0.2),
+  fluid = list(Mu = 1.85e-05, Ve = (50/36)/0.12, lambdag = 1/200, Rhop = 2000, Rhof =
+    1.2, Croh = 0.05),
+  noiseLevel = list(Vp = 0.1, Rhop = 0.05),
+  model = "Barth-Muschelknautz",
+  intervals = c(0, 2, 4, 6, 8, 10, 15, 20, 30) * 1e-06,
+  delta = c(0, 0.02, 0.03, 0.05, 0.1, 0.3, 0.3, 0.2)
+)
 }
 \arguments{
 \item{x}{vector of length at least one and up to six, specifying non-default geometrical parameters in [m]: Da, H, Dt, Ht, He, Be}

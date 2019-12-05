@@ -4,12 +4,32 @@
 \alias{plotFunction}
 \title{Surface plot of a function}
 \usage{
-plotFunction(f = function(x) {     rowSums(x^2) }, lower = c(0, 0),
-  upper = c(1, 1), type = "filled.contour", s = 100, xlab = "x1",
-  ylab = "x2", zlab = "y", color.palette = terrain.colors,
-  title = " ", levels = NULL, points1, points2, pch1 = 20,
-  pch2 = 8, lwd1 = 1, lwd2 = 1, cex1 = 1, cex2 = 1,
-  col1 = "red", col2 = "black", theta = -40, phi = 40, ...)
+plotFunction(
+  f = function(x) {     rowSums(x^2) },
+  lower = c(0, 0),
+  upper = c(1, 1),
+  type = "filled.contour",
+  s = 100,
+  xlab = "x1",
+  ylab = "x2",
+  zlab = "y",
+  color.palette = terrain.colors,
+  title = " ",
+  levels = NULL,
+  points1,
+  points2,
+  pch1 = 20,
+  pch2 = 8,
+  lwd1 = 1,
+  lwd2 = 1,
+  cex1 = 1,
+  cex2 = 1,
+  col1 = "red",
+  col2 = "black",
+  theta = -40,
+  phi = 40,
+  ...
+)
 }
 \arguments{
 \item{f}{function to be plotted. The function should either be able to take two vectors or one matrix specifying sample locations. i.e. \code{z=f(X)} or \code{z=f(x2,x1)} where Z is a two column matrix containing the sample locations \code{x1} and \code{x2}.}

@@ -10,10 +10,6 @@
 \method{print}{kriging}(x, ...)
 }
 \arguments{
-\item{x}{fit returned by \code{\link{buildKrigingDACE}}.}
-
-\item{...}{additional parameters}
-
 \item{x}{fit returned by \code{\link{buildKriging}}.}
 
 \item{...}{additional parameters}

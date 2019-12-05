@@ -4,8 +4,7 @@
 \alias{spotAlgEsDominantReco}
 \title{spotAlgEsDominantReco}
 \usage{
-spotAlgEsDominantReco(parents, rhoVal, dimension, nSigma,
-  objType = "obj")
+spotAlgEsDominantReco(parents, rhoVal, dimension, nSigma, objType = "obj")
 }
 \arguments{
 \item{parents}{Parent individuals}
