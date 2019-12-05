@@ -466,7 +466,7 @@ daceObjfunc <- function(theta, para, what="all"){
 	#% Cholesky factorization. If it fails, return Inf for f, and NA for fit
 	#if(!is.positive.definite(R)) return(list(f=obj,fit=fit))     #remark: is.positive.definite(R) does nothing else but a try(chol(R)) if method chol is used. therefore skipped.
 	Cmat <- try( chol(R), TRUE)
-	if(class(Cmat) == "try-error"){		
+	if(class(Cmat)[1] == "try-error"){		
 		return(list(f=obj,fit=fit))
 	}
 	

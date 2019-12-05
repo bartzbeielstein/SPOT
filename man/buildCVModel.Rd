@@ -17,8 +17,6 @@ buildCVModel(x, y, control = list())
 This can also be changed after the model has been built, by manipulating the respective \code{object$target} value.\cr
 \code{uncertaintyEstimator} a character vector specifying which uncertaintyEstimator should be used.
 "s" or the linearlyAdapted uncertrainty "sLinear". Default is "sLinear"}
-
-\item{modellingFunction}{the model that shall be fitted to each data fold}
 }
 \value{
 set of models (class cvModel)

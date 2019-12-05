@@ -338,7 +338,7 @@ krigingLikelihood <- function(x,AX,Ay,optimizeP=FALSE,useLambda=TRUE){
 	cholPsi <- try(chol(Psi), TRUE) 
 
 	## give penalty if fail
-	if(class(cholPsi) == "try-error"){
+	if(class(cholPsi)[1] == "try-error"){
 		#warning("Correlation matrix is not positive semi-definite (During Maximum Likelihood Estimation in buildKriging). Returning penalty.")
 		penalty <- 1e4 - min(eigen(Psi,symmetric=TRUE,only.values=TRUE)$values) 
 		return(list(NegLnLike=penalty,Psi=NA,Psinv=NA,mu=NA,SSQ=NA))
@@ -351,7 +351,7 @@ krigingLikelihood <- function(x,AX,Ay,optimizeP=FALSE,useLambda=TRUE){
 	Psinv <- try(chol2inv(cholPsi), TRUE) 
 	
   ## give penalty if failed
-	if(class(Psinv) == "try-error"){
+	if(class(Psinv)[1] == "try-error"){
 		#warning("Correlation matrix is not positive semi-definite (During Maximum Likelihood Estimation in buildKriging). Returning penalty.")
 		penalty <- 1e4 - min(eigen(Psi,symmetric=TRUE,only.values=TRUE)$values) 
 		return(list(NegLnLike=penalty,Psi=NA,Psinv=NA,mu=NA,SSQ=NA))
@@ -565,7 +565,7 @@ predictKrigingReinterpolation <- function(object,newdata,...){
 	if (any(object$target %in% c("s","ei"))){
 		#
 		Psinv <- try(solve.default(PsiB), TRUE) 
-		if(class(Psinv) == "try-error"){
+		if(class(Psinv)[1] == "try-error"){
 			Psinv<-ginv(PsiB)
 		}	
 		#

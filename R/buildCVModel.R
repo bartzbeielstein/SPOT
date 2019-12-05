@@ -5,7 +5,7 @@
 #' 
 #' @param x design matrix (sample locations)
 #' @param y vector of observations at \code{x}
-#' @param modellingFunction the model that shall be fitted to each data fold
+# @param modellingFunction the model that shall be fitted to each data fold
 #' @param control (list), with the options for the model building procedure:\cr
 #' \code{types} a character vector giving the data type of each variable. All but "factor" will be handled as numeric, "factor" (categorical) variables will be subject to the hamming distance.\cr
 #' \code{target} target values of the prediction, a vector of strings. Each string specifies a value to be predicted, e.g., "y" for mean, "s" for standard deviation.

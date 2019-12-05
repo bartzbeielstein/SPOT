@@ -10,7 +10,8 @@
 #' @export
 #'
 #' @examples
-#' spot(,funSphere,c(-2,-3),c(1,2), control = list(infillCriterion = infillExpectedImprovement, modelControl = list(target = c("y","s"))))
+#' spot(,funSphere,c(-2,-3),c(1,2), control = 
+#'     list(infillCriterion = infillExpectedImprovement, modelControl = list(target = c("y","s"))))
 infillExpectedImprovement <- function(predictionList, model){
     mean <- predictionList$y
     sd <- predictionList$s

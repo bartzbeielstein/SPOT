@@ -7,13 +7,13 @@
 plotSingleDimFunction(evalFun, lower, upper, target)
 }
 \arguments{
+\item{evalFun}{function to be plotted. The function should either be able to take two vectors or one matrix specifying sample locations. i.e. \code{z=f(X)} or \code{z=f(x2,x1)} where Z is a two column matrix containing the sample locations \code{x1} and \code{x2}.}
+
 \item{lower}{boundary for x1 and x2 (defaults to \code{c(0,0)}).}
 
 \item{upper}{boundary (defaults to \code{c(1,1)}).}
 
 \item{target}{String, which type of uncertainty estimation should be plotted? default: NULL - no estimation plotted. 's' standard estimation. 'sLinear' linearly adapted estimation.}
-
-\item{f}{function to be plotted. The function should either be able to take two vectors or one matrix specifying sample locations. i.e. \code{z=f(X)} or \code{z=f(x2,x1)} where Z is a two column matrix containing the sample locations \code{x1} and \code{x2}.}
 }
 \description{
 Plot a single dimensional Function

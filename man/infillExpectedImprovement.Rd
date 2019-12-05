@@ -18,5 +18,6 @@ numeric vector, expected improvement results
 Expected Improvement infill criterion that can be passed to control$modelControl$infillCriterion in order to be used during the optimization in SPOT.
 }
 \examples{
-spot(,funSphere,c(-2,-3),c(1,2), control = list(infillCriterion = infillExpectedImprovement, modelControl = list(target = c("y","s"))))
+spot(,funSphere,c(-2,-3),c(1,2), control = 
+    list(infillCriterion = infillExpectedImprovement, modelControl = list(target = c("y","s"))))
 }
