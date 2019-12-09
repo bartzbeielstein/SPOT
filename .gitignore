@@ -3,3 +3,4 @@
 .Rhistory
 *.Rproj
 tests/testthat/Rplots.pdf
+.RData
