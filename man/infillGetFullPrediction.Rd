@@ -7,14 +7,14 @@
 infillGetFullPrediction(predictionList, model)
 }
 \arguments{
-\item{predictionList}{}
+\item{predictionList}{The results of a predict.model call}
 
-\item{model}{}
+\item{model}{The surrogate model which was used for the prediction}
 }
 \value{
-list, full model predictio
+list, full model prediction
 }
 \description{
-Wrapper to get the full model Prediction instead of just one target for plotting purposes
+Wrapper to get the full model Prediction instead of just one target for plotting purposes.
 }
 \keyword{internal}

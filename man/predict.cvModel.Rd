@@ -7,7 +7,7 @@
 \method{predict}{cvModel}(object, newdata, ...)
 }
 \arguments{
-\item{object}{Kriging model (settings and parameters) of class \code{kriging}.}
+\item{object}{CV model (settings and parameters) of class \code{cvModel}.}
 
 \item{newdata}{design matrix to be predicted}
 
@@ -17,5 +17,5 @@
 prediction results: list with predicted mean ('y'), estimated uncertainty ('y'), linearly adapted uncertainty ('sLinear')
 }
 \description{
-Predict with the cross validated model
+Predict with the cross validated model produced by \code{\link{buildCVModel}}.
 }

@@ -19,3 +19,4 @@ numeric vector, adapted uncertainty values
 \description{
 Linearly adapt the uncertainty estimation of a CV model regarding its distance to known neighbours
 }
+\keyword{internal}

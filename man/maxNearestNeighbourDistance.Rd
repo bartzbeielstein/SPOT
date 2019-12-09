@@ -15,3 +15,4 @@ maximum euclidean distance between two nearest neighbours
 \description{
 Find the maximum distance between 2 nearest neighbours in a data set
 }
+\keyword{internal}

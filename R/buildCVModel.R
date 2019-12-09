@@ -64,6 +64,8 @@ buildCVModel <- function(x, y, control=list()){
 #' @param x matrix with candidate solutions
 #'
 #' @return maximum euclidean distance between two nearest neighbours
+#' @export
+#' @keywords internal
 maxNearestNeighbourDistance <- function(x){
     minDists <- NULL
     for(i in 1:nrow(x)){
@@ -82,6 +84,8 @@ maxNearestNeighbourDistance <- function(x){
 #' @param x matrix, already evaluated data points
 #'
 #' @return numeric vector, adapted uncertainty values
+#' @export
+#' @keywords internal
 linearAdaptedSE <- function(sOld, newdata, x){
     ifelse(is.null(nrow(newdata)),nr <- 1,nr <- nrow(newdata))
     newdata <- matrix(newdata, nrow = nr)
@@ -100,11 +104,12 @@ linearAdaptedSE <- function(sOld, newdata, x){
     sOld * 2 # ?
 }
 
+###################################################################################
 #' predict.cvModel
 #'
-#' Predict with the cross validated model
+#' Predict with the cross validated model produced by \code{\link{buildCVModel}}.
 #'
-#' @param object Kriging model (settings and parameters) of class \code{kriging}.
+#' @param object CV model (settings and parameters) of class \code{cvModel}.
 #' @param newdata design matrix to be predicted
 #' @param ... Additional parameters passed to the model
 #'

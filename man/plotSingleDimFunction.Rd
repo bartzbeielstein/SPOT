@@ -18,3 +18,4 @@ plotSingleDimFunction(evalFun, lower, upper, target)
 \description{
 Plot a single dimensional Function
 }
+\keyword{internal}

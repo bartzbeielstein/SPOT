@@ -11,6 +11,9 @@
 #' @importFrom ggplot2 geom_line
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 geom_ribbon
+#' 
+#' @export
+#' @keywords internal
 plotSingleDimFunction <- function(evalFun, lower, upper, target){
     force(evalFun)
     

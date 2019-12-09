@@ -70,12 +70,13 @@ wrapFunctionParallel <- function(fun, cl = NULL, nCores = NULL){
 ###################################################################################################
 #' wrapBatchTools
 #' 
-#' wrapFunction to call a function through batchtools
+#' Wrap a given objective function to be evaluated via the batchtools package and make it accessible
+#' for SPOT.
 #'
 #' @param fun function to wrap
 #' @param reg batchtools registry, if none is provided, then one will be created automatically
 #' @param clusterFunction batchtools clusterFunction, default: makeClusterFunctionsInteractive()
-#' @param resources resource list, default NULL
+#' @param resources resource list that is passed to batchtools, default NULL
 #'
 #' @return callable function for SPOT
 #' @export

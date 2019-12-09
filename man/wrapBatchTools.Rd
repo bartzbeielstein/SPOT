@@ -18,11 +18,12 @@ wrapBatchTools(
 
 \item{clusterFunction}{batchtools clusterFunction, default: makeClusterFunctionsInteractive()}
 
-\item{resources}{resource list, default NULL}
+\item{resources}{resource list that is passed to batchtools, default NULL}
 }
 \value{
 callable function for SPOT
 }
 \description{
-wrapFunction to call a function through batchtools
+Wrap a given objective function to be evaluated via the batchtools package and make it accessible
+for SPOT.
 }
