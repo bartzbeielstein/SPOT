@@ -258,7 +258,7 @@ calculationBarthMuschelknautz <- function(cyclone, fluid, xmean, delta){
 #' ## optimize with spot
 #' res <- spot(fun=tfunvecF1,lower=c(1,2),upper=c(2,3),
 #'    control=list(modelControl=list(target="ei"),
-#'    model=buildKriging,optimizer=optimLBFGSB,plots=TRUE)) 
+#'    model=buildKriging,optimizer=optimDE,plots=TRUE)) 
 #' ## best found solution ...
 #' res$xbest
 #' ## ... and its objective function value

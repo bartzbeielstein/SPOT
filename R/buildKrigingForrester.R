@@ -16,7 +16,7 @@
 #' \code{types} a character vector giving the data type of each variable. All but "factor" will be handled as numeric, "factor" (categorical) variables will be subject to the hamming distance.\cr
 #' \code{thetaLower} lower boundary for theta, default is \code{1e-4}\cr
 #' \code{thetaUpper} upper boundary for theta, default is \code{1e2}\cr
-#' \code{algTheta}  algorithm used to find theta, default is \code{optimLBFGSB}.\cr
+#' \code{algTheta}  algorithm used to find theta, default is \code{optimDE}.\cr
 #' \code{budgetAlgTheta} budget for the above mentioned algorithm, default is \code{200}. The value will be multiplied with the length of the model parameter vector to be optimized.\cr
 #' \code{optimizeP} boolean that specifies whether the exponents (\code{p}) should be optimized. Else they will be set to two. Default is \code{FALSE}\cr
 #' \code{useLambda} whether or not to use the regularization constant lambda (nugget effect). Default is \code{TRUE}.\cr
@@ -91,10 +91,10 @@
 #' x <- cbind(runif(50)*15-5,runif(50)*15,sample(1:3,50,replace=TRUE))
 #' y <- as.matrix(apply(x,1,braninFunctionFactor))
 #' ## fit the model (default: assume all variables are numeric)
-#' fitDefault <- buildKriging(x,y,control = list(algTheta=optimLBFGSB))
+#' fitDefault <- buildKriging(x,y,control = list(algTheta=optimDE))
 #' ## fit the model (give information about the factor variable)
 #' fitFactor <- buildKriging(x,y,control = 
-#'		list(algTheta=optimLBFGSB,types=c("numeric","numeric","factor")))
+#'		list(algTheta=optimDE,types=c("numeric","numeric","factor")))
 #' ## create test data
 #' xtest <- cbind(runif(200)*15-5,runif(200)*15,sample(1:3,200,replace=TRUE))
 #' ytest <- as.matrix(apply(xtest,1,braninFunctionFactor))
@@ -111,7 +111,7 @@ buildKriging <- function(x, y, control=list()){
   #hence large budget. both need to be fixed as SPOT grows.
 	con<-list(thetaLower=1e-4, thetaUpper=1e2, 
 		types=rep("numeric",npar),
-		algTheta=optimLBFGSB, budgetAlgTheta=200, 
+		algTheta=optimDE, budgetAlgTheta=200, 
 		optimizeP= FALSE,
 		useLambda=TRUE, lambdaLower = -6, lambdaUpper = 0, 
 		startTheta=NULL, reinterpolate=TRUE, target="y")
