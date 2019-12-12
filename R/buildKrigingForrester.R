@@ -170,8 +170,7 @@ buildKriging <- function(x, y, control=list()){
 	}			
 	if(fit$useLambda){
 		# start value for lambda:
-		#x2 <- fit$lambdaLower + (fit$lambdaUpper - fit$lambdaLower)*runif(1)
-		x2 <-  (fit$lambdaUpper - fit$lambdaLower)/2
+		x2 <-  (fit$lambdaUpper + fit$lambdaLower)/2
 		x0 <- c(x0,x2)
 		#append regression constant lambda (nugget)
 		LowerTheta <- c(LowerTheta,fit$lambdaLower)
