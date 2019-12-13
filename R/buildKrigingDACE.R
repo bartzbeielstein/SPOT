@@ -77,7 +77,7 @@ buildKrigingDACE <- function(x, y, control=list()){ #nugget -1 means that the nu
 		startTheta <- res$theta
 	}	
 	
-	q <- length(startTheta)*control$budgetAlgTheta
+	budget <- length(startTheta)*control$budgetAlgTheta
 	
 	small<-startTheta<lb  #force starting guess into bounds
 	big<-startTheta>ub
@@ -87,17 +87,17 @@ buildKrigingDACE <- function(x, y, control=list()){ #nugget -1 means that the nu
 		startTheta <- matrix(startTheta,1)
 	}
 	
-	para <- dacePrepareFit(x, y, control$nugget, control$regr, control$corr) 
-  opts<-list(funEvals=q)
+	pars <- dacePrepareFit(x, y, control$nugget, control$regr, control$corr) 
+  opts<-list(funEvals=budget)
   ## Optimize likelihood
 	res <- control$algTheta(x=startTheta,fun=daceLikelihood,lower=lb,upper=ub,
-						control=opts,para=para,nugget=control$nugget)		
+						control=opts,pars=pars,nugget=control$nugget)		
 	if(is.null(res$xbest))
     res$xbest<-startTheta
 	bestTheta = res$xbest		
 
 	ftheta <- daceFixTheta(m,bestTheta,control$nugget,control$corr)
-	model <- daceGetFit(ftheta$thetaConv,para)
+	model <- daceGetFit(ftheta$thetaConv,pars)
 	like <-  res$ybest
 	nEval <- as.numeric(res$counts[[1]])
 	fit <- list(model=model,like=like,theta=ftheta$theta,lambda=ftheta$lambda,p=ftheta$p,nevals=nEval,GRAD=FALSE,MSE=FALSE,GRADMSE=FALSE,target=control$target)
@@ -227,7 +227,7 @@ daceFixTheta  <- function(m,bestTheta,nugget,corr){
 #' Returns the maximum likelihood for the model parameter optimization.
 #'
 #' @param theta model parameter vector to be evaluated
-#' @param para model option list, as created with \code{\link{dacePrepareFit}}
+#' @param pars model option list, as created with \code{\link{dacePrepareFit}}
 #' @param nugget Value for nugget. Default is -1, which means the nugget was optimized during MLE. 
 #'
 #' @return the likelihood value as calculated by \code{\link{daceEvalFit}}
@@ -235,10 +235,10 @@ daceFixTheta  <- function(m,bestTheta,nugget,corr){
 #' @seealso \code{\link{buildKrigingDACE}} \code{\link{daceEvalFit}} 
 #' @keywords internal
 ###################################################################################
-daceLikelihood <- function (theta, para, nugget){
-	n <- para$n
-	thetaConv <- daceFixTheta(n,theta,nugget,para$corr)$thetaConv
-	res <- daceEvalFit(thetaConv,para)		
+daceLikelihood <- function (theta, pars, nugget){
+	n <- pars$n
+	thetaConv <- daceFixTheta(n,theta,nugget,pars$corr)$thetaConv
+	res <- daceEvalFit(thetaConv,pars)		
 	min(res[length(thetaConv)+1])  #TODO: warum hier min?
 }
 
@@ -321,19 +321,19 @@ dacePrepareFit <- function (S, Y, nugget, regr=regpoly0, corr=corrnoisykriging){
 #' Evaluate the fit of a certain set of model parameters (\code{theta}).
 #'
 #' @param theta model parameters to be evaluated
-#' @param para model option list, as created with \code{\link{dacePrepareFit}}
+#' @param pars model option list, as created with \code{\link{dacePrepareFit}}
 #'
 #' @return performance vector, first elements are theta, last element is likelihood.
 #'
 #' @seealso \code{\link{buildKrigingDACE}} \code{\link{daceLikelihood}} \code{\link{daceGetFit}} 
 #' @keywords internal
 ###################################################################################
-daceEvalFit <- function (theta, para){	
+daceEvalFit <- function (theta, pars){	
 	if(any(theta <= 0)){ 
 		stop('theta for dace model must be strictly positive')
 	}
 
-	f <- daceObjfunc(theta, para, "f")$f
+	f <- daceObjfunc(theta, pars, "f")$f
 	perf <- c(theta, f, 1)
 	#if(is.infinite(f)) warning('Bad point.  Try increasing theta')
 
@@ -347,7 +347,7 @@ daceEvalFit <- function (theta, para){
 #' get all relevant variables of the model.
 #'
 #' @param theta model parameters to be evaluated
-#' @param para model option list, as created with \code{\link{dacePrepareFit}}
+#' @param pars model option list, as created with \code{\link{dacePrepareFit}}
 #'
 #' @return list of model variables, with the following elements: \cr
 #' 		\code{regr} regression function used \cr
@@ -372,16 +372,16 @@ daceEvalFit <- function (theta, para){
 #' @keywords internal
 # @export
 ###################################################################################
-daceGetFit <- function (theta, para){	
+daceGetFit <- function (theta, pars){	
 	if(any(theta <= 0)){ 
 		stop('theta for dace model must be strictly positive')
 	}
 	
-	fit <- daceObjfunc(theta, para, "fit")$fit
+	fit <- daceObjfunc(theta, pars, "fit")$fit
 
-	list(regr=para$regr, corr=para$corr, theta=theta, 
-				beta=fit$beta, gamma=fit$gamma, sigma2=para$sY^2*fit$sigma2, 
-				S=para$S, Ssc=para$Ssc, Y=para$y, Ysc=para$Ysc, C=fit$C, 
+	list(regr=pars$regr, corr=pars$corr, theta=theta, 
+				beta=fit$beta, gamma=fit$gamma, sigma2=pars$sY^2*fit$sigma2, 
+				S=pars$S, Ssc=pars$Ssc, Y=pars$y, Ysc=pars$Ysc, C=fit$C, 
 				Ft=fit$Ft, G=fit$G)#, detR=fit$detR)
 }  
  
@@ -428,7 +428,7 @@ repmat <- function(a,n,m) {kronecker(matrix(1,n,m),a)}
 #' get all relevant variables of the model.
 #'
 #' @param theta model parameters to be evaluated
-#' @param para model option list, as created with \code{\link{dacePrepareFit}}
+#' @param pars model option list, as created with \code{\link{dacePrepareFit}}
 #' @param what a string: "all" both the likelihood (f) and the model list (fit) will be returned, "f" and "fit specify to return only those.
 #'
 #' @return A list of two elements (which are NA if \code{what} is specified accordingly)\cr
@@ -449,19 +449,19 @@ repmat <- function(a,n,m) {kronecker(matrix(1,n,m),a)}
 #' @keywords internal
 # @export
 ###################################################################################
-daceObjfunc <- function(theta, para, what="all"){
+daceObjfunc <- function(theta, pars, what="all"){
 	#% Initialize
 	obj <- 1e4 #penalty for bad numerical conditions    TODO: Inf crashes some optimizers, some not. Use very large number instead?
 	fit<-NA
-	m <- dim(para$F)[1]
-	if(is.null(m))m<-length(para$F)
+	m <- dim(pars$F)[1]
+	if(is.null(m))m<-length(pars$F)
 	#% Set up  R
-	r <- para$corr(theta, para$D, "r")$r
+	r <- pars$corr(theta, pars$D, "r")$r
 	idx <- which(r>0)
 	o <- 1:m   
 	mu <- (10+m)*.Machine$double.eps
 	R<-matrix(0,nrow=m,ncol=m)  
-	R[cbind(c(para$ij[idx,1], o),c(para$ij[idx,2], o))]=c(r[idx], rep(1,m)+mu)
+	R[cbind(c(pars$ij[idx,1], o),c(pars$ij[idx,2], o))]=c(r[idx], rep(1,m)+mu)
 	#	browser()
 	#% Cholesky factorization. If it fails, return Inf for f, and NA for fit
 	#if(!is.positive.definite(R)) return(list(f=obj,fit=fit))     #remark: is.positive.definite(R) does nothing else but a try(chol(R)) if method chol is used. therefore skipped.
@@ -473,20 +473,20 @@ daceObjfunc <- function(theta, para, what="all"){
 	
 	#% Get least squares solution
 	Cmat <- t(Cmat)
-	Ft <- spotHelpBslash(Cmat,para$F)
+	Ft <- spotHelpBslash(Cmat,pars$F)
 	resqr <- qr(Ft)
 	Q<-qr.Q(resqr)
 	G<-qr.R(resqr)
 	
 	if  (rcond(G) < 1e-10){
 		#% Check   F  
-		if (kappa(para$F,exact=T) > 1e15 ){ #TODO?
+		if (kappa(pars$F,exact=T) > 1e15 ){ #TODO?
 			stop('F is too ill conditioned. Poor combination of regression model and design sites')
 		}else{  #% Matrix  Ft  is too ill conditioned
 			return(list(f=obj,fit=fit))	
 		} 
 	}
-	Yt <- spotHelpBslash(Cmat,para$y)   
+	Yt <- spotHelpBslash(Cmat,pars$y)   
 	beta <- spotHelpBslash(G,(t(Q)%*%Yt))
 	rho <- if(length(beta)==1){Yt - Ft*as.numeric(beta)}else{Yt - Ft%*%beta}
 	sigma2 <- colSums(rho^2)/m
