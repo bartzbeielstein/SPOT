@@ -130,6 +130,15 @@ spot <- function(x=NULL,fun, #mostly, fun must have format y=f(x,...).
 	result
 } 
 
+###################################################################################################
+#' Default Control list for spot 
+#'
+#' @param controlList list of controls, see \code{\link{spotControl}}.
+#' @param dimension dimension of the optimization problem. See \code{\link{spotControl}}.
+#' @return a list
+#' @export
+#' @keywords internal
+###################################################################################################
 spotFillControlList <- function(controlList, dimension){
     con <- spotControl(dimension)
     con[names(controlList)] <- controlList
