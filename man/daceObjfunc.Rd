@@ -4,12 +4,12 @@
 \alias{daceObjfunc}
 \title{DACE objective function}
 \usage{
-daceObjfunc(theta, para, what = "all")
+daceObjfunc(theta, pars, what = "all")
 }
 \arguments{
 \item{theta}{model parameters to be evaluated}
 
-\item{para}{model option list, as created with \code{\link{dacePrepareFit}}}
+\item{pars}{model option list, as created with \code{\link{dacePrepareFit}}}
 
 \item{what}{a string: "all" both the likelihood (f) and the model list (fit) will be returned, "f" and "fit specify to return only those.}
 }

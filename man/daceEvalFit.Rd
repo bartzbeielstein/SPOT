@@ -4,12 +4,12 @@
 \alias{daceEvalFit}
 \title{Evaluate DACE fit}
 \usage{
-daceEvalFit(theta, para)
+daceEvalFit(theta, pars)
 }
 \arguments{
 \item{theta}{model parameters to be evaluated}
 
-\item{para}{model option list, as created with \code{\link{dacePrepareFit}}}
+\item{pars}{model option list, as created with \code{\link{dacePrepareFit}}}
 }
 \value{
 performance vector, first elements are theta, last element is likelihood.

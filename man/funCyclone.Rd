@@ -50,7 +50,7 @@ tfunvecF1(matrix(c(1.26,2.5,1,2),2,2,byrow=TRUE))
 ## optimize with spot
 res <- spot(fun=tfunvecF1,lower=c(1,2),upper=c(2,3),
    control=list(modelControl=list(target="ei"),
-   model=buildKriging,optimizer=optimLBFGSB,plots=TRUE)) 
+   model=buildKriging,optimizer=optimDE,plots=TRUE)) 
 ## best found solution ...
 res$xbest
 ## ... and its objective function value

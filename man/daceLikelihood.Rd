@@ -4,12 +4,12 @@
 \alias{daceLikelihood}
 \title{Wrapper for Maximum Likelihood Estimation}
 \usage{
-daceLikelihood(theta, para, nugget)
+daceLikelihood(theta, pars, nugget)
 }
 \arguments{
 \item{theta}{model parameter vector to be evaluated}
 
-\item{para}{model option list, as created with \code{\link{dacePrepareFit}}}
+\item{pars}{model option list, as created with \code{\link{dacePrepareFit}}}
 
 \item{nugget}{Value for nugget. Default is -1, which means the nugget was optimized during MLE.}
 }

@@ -28,11 +28,11 @@
 #' @examples
 #' ## Most simple example: Kriging + LHS + predicted 
 #' ## mean optimization (not expected improvement)
-#' res <- spot(,funSphere,c(-2,-3),c(1,2))
+#' res <- spot(,funSphere,c(-2,-3),c(1,2),control=list(funEvals=15))
 #' res$xbest
 #' ## With expected improvement
 #' res <- spot(,funSphere,c(-2,-3),c(1,2),
-#'    control=list(modelControl=list(target="ei"))) 
+#'    control=list(funEvals=15,modelControl=list(target="ei"))) 
 #' res$xbest
 #' ### With additional start point:
 #' #res <- spot(matrix(c(0.05,0.1),1,2),funSphere,c(-2,-3),c(1,2))

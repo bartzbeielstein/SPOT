@@ -13,7 +13,7 @@ buildKrigingDACE(x, y, control = list())
 
 \item{control}{(list), with the options for the model building procedure:\cr
 \code{startTheta} optional start value for theta optimization, default is \code{NULL}\cr
-\code{algTheta}  algorithm used to find theta, default is \code{optimLBFGSB}.\cr
+\code{algTheta}  algorithm used to find theta, default is \code{optimDE}.\cr
 \code{budgetAlgTheta} budget for the above mentioned algorithm, default is \code{200}. The value will be multiplied with the length of the model parameter vector to be optimized.\cr
 \code{nugget} Value for nugget. Default is -1, which means the nugget will be optimized during MLE. Else it can be fixed in a range between 0 and 1.
 \code{regr} Regression function to be used: \code{\link{regpoly0}} (default), \code{\link{regpoly1}}, \code{\link{regpoly2}}. Can be a custom user function.\cr

@@ -4,12 +4,12 @@
 \alias{daceGetFit}
 \title{Get DACE fit}
 \usage{
-daceGetFit(theta, para)
+daceGetFit(theta, pars)
 }
 \arguments{
 \item{theta}{model parameters to be evaluated}
 
-\item{para}{model option list, as created with \code{\link{dacePrepareFit}}}
+\item{pars}{model option list, as created with \code{\link{dacePrepareFit}}}
 }
 \value{
 list of model variables, with the following elements: \cr
