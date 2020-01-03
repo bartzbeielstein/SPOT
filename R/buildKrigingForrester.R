@@ -136,8 +136,8 @@ buildKriging <- function(x, y, control=list()){
 	UpperTheta <- rep(1,k)*log10(fit$thetaUpper)
 
 	#Wrapper for optimizing theta  based on krigingLikelihood:
-	fitFun <- function (x, fX, fy,optimizeP,useLambda){ #todo vectorize, at least for cma_es with active vectorize?
-		as.numeric(krigingLikelihood(x,fX,fy,optimizeP,useLambda)$NegLnLike)
+	fitFun <- function (x, fX, fy,optimizeP,useLambda,penval){ #todo vectorize, at least for cma_es with active vectorize?
+		as.numeric(krigingLikelihood(x,fX,fy,optimizeP,useLambda,penval)$NegLnLike)
 	}
 	n<-nrow(fit$x) #number of observations
 	
@@ -181,9 +181,19 @@ buildKriging <- function(x, y, control=list()){
 	x0 <- pmax(x0,LowerTheta)
   x0 <- matrix(x0,1) #matrix with one row
 	opts<-list(funEvals=fit$budgetAlgTheta*length(x0))
-	res <- fit$algTheta(x=x0,fun=function(x,fX,fy,optimizeP,useLambda){if(!is.matrix(x)){fitFun(x,fX,fy,optimizeP,useLambda)}else{apply(x,1,fitFun,fX,fy,optimizeP,useLambda)}},
+	#determine a good penalty value (based on number of samples and variance of y)
+	penval <- n*log(var(y)) + 1e4
+	res <- fit$algTheta(x=x0,fun=
+							function(x,fX,fy,optimizeP,useLambda,penval){
+								if(!is.matrix(x)){
+									fitFun(x,fX,fy,optimizeP,useLambda,penval)
+								}
+								else{
+									apply(x,1,fitFun,fX,fy,optimizeP,useLambda,penval)
+								}
+							},
             lower=LowerTheta,upper=UpperTheta, 
-						control=opts,fX=A,fy=fit$y,optimizeP=fit$optimizeP,useLambda=fit$useLambda)	
+						control=opts,fX=A,fy=fit$y,optimizeP=fit$optimizeP,useLambda=fit$useLambda,penval=penval)	
 	if(is.null(res$xbest))res$xbest<-x0;
 	Params <- res$xbest
 	nevals <- as.numeric(res$count[[1]])
@@ -290,6 +300,7 @@ normalizeMatrix <- function(x,ymin, ymax){
 #' @param Ay vector of observations at sample locations
 #' @param optimizeP boolean, whether to optimize parameter p (exponents) or fix at two.
 #' @param useLambda boolean, whether to use nugget
+#' @param penval a penalty value which affects the value returned for invalid correlation matrices / configurations
 #'
 #' @return list with elements\cr
 #' \code{NegLnLike}  concentrated log-likelihood *-1 for minimising \cr
@@ -301,36 +312,48 @@ normalizeMatrix <- function(x,ymin, ymax){
 #' @export
 #' @keywords internal
 ###################################################################################
-krigingLikelihood <- function(x,AX,Ay,optimizeP=FALSE,useLambda=TRUE){
+krigingLikelihood <- function(x,AX,Ay,optimizeP=FALSE,useLambda=TRUE,penval=1e8){
+	## todo: this penalty value should not be a hard constant.
+	## the scale of the likelihood (n*log(SigmaSqr) + LnDetPsi)
+	## at least depends on log(var) and the number of samples
+	## hence, large number of samples may lead to cases where the
+	## penality is lower than the likelihood of most valid parameterizations
+	## suggested solution (still requires testing): 
+	#penval <- n*log(var(y)) + 1e4
+	
+	
 	nx<-nrow(AX)
 	theta <- 10^x[1:nx]
 	if(optimizeP){	
 		AX <- abs(AX)^(x[(nx+1):(2*nx)])
 	}
 	lambda <- 0
-	if(useLambda)
+	if(useLambda){
 		lambda <- 10^x[length(x)]
+	}
 	if( any(theta==0) ||  any(is.infinite(c(theta,lambda)))){ #for instance caused by bound violation
 		return(list(NegLnLike=1e4,Psi=NA,Psinv=NA,mu=NA,ssq=NA))
 	}
 	n <- dim(Ay)[1]
 	
 	Psi <- exp(-matrix(colSums(theta*AX),n,n))
-	if(useLambda)
+	if(useLambda){
 		Psi <- Psi+diag(lambda,n)
-
+	}
+	
 	if(any(is.infinite(Psi))){ # this is required especially if distance matrices are forced to be CNSD/NSD and hence have zero distances
-	  penalty <- 1e4 
+	  penalty <- penval 
 		return(list(NegLnLike=penalty,Psi=NA,Psinv=NA,mu=NA,SSQ=NA)) #todo: add something like smallest eigenvalue to penalty?
 	}	
 		
 	## Check whether Psi is ill-conditioned
   kap <- rcond(Psi)  
-	if(is.na(kap))
+	if(is.na(kap)){
 		kap <- 0
+	}
 	if(kap < 1e-10){ 
 		#warning("Correlation matrix is ill-conditioned (During Maximum Likelihood Estimation in buildKriging). Returning penalty.")
-		return(list(NegLnLike=1e4,Psi=NA,Psinv=NA,mu=NA,SSQ=NA,a=NA,U=NA,isIndefinite=TRUE)) #todo: add something like smallest eigenvalue to penalty?
+		return(list(NegLnLike=penval-log10(kap),Psi=NA,Psinv=NA,mu=NA,SSQ=NA,a=NA,U=NA,isIndefinite=TRUE))
 	}	
 		
 	## cholesky decomposition
@@ -339,7 +362,7 @@ krigingLikelihood <- function(x,AX,Ay,optimizeP=FALSE,useLambda=TRUE){
 	## give penalty if fail
 	if(class(cholPsi)[1] == "try-error"){
 		#warning("Correlation matrix is not positive semi-definite (During Maximum Likelihood Estimation in buildKriging). Returning penalty.")
-		penalty <- 1e4 - min(eigen(Psi,symmetric=TRUE,only.values=TRUE)$values) 
+		penalty <- penval - log10(min(eigen(Psi,symmetric=TRUE,only.values=TRUE)$values))
 		return(list(NegLnLike=penalty,Psi=NA,Psinv=NA,mu=NA,SSQ=NA))
 	}	
 		
@@ -352,7 +375,7 @@ krigingLikelihood <- function(x,AX,Ay,optimizeP=FALSE,useLambda=TRUE){
   ## give penalty if failed
 	if(class(Psinv)[1] == "try-error"){
 		#warning("Correlation matrix is not positive semi-definite (During Maximum Likelihood Estimation in buildKriging). Returning penalty.")
-		penalty <- 1e4 - min(eigen(Psi,symmetric=TRUE,only.values=TRUE)$values) 
+		penalty <- penval - log10(min(eigen(Psi,symmetric=TRUE,only.values=TRUE)$values))
 		return(list(NegLnLike=penalty,Psi=NA,Psinv=NA,mu=NA,SSQ=NA))
 	}	
   
@@ -361,26 +384,27 @@ krigingLikelihood <- function(x,AX,Ay,optimizeP=FALSE,useLambda=TRUE){
 		psisum <- as.numeric(rep(1,n) %*% Psinv %*% rep(1,n))
 		if(psisum==0){ #if it is still zero, return penalty
 			#warning("Sum of elements in inverse correlation matrix is zero (During Maximum Likelihood Estimation in buildKriging). Returning penalty.")
-			return(list(NegLnLike=1e4,Psi=NA,Psinv=NA,mu=NA,SSQ=NA))
+			return(list(NegLnLike=penval,Psi=NA,Psinv=NA,mu=NA,SSQ=NA))
 		}
 	}		
 	
 	mu <- sum(Psinv%*%Ay)/psisum
 	if(is.infinite(mu)|is.na(mu)){
 		#warning("MLE estimate of mu is infinite or NaN (During Maximum Likelihood Estimation in buildKriging). Returning penalty.")
-		return(list(NegLnLike=1e4,Psi=NA,Psinv=NA,mu=NA,SSQ=NA))
+		return(list(NegLnLike=penval,Psi=NA,Psinv=NA,mu=NA,SSQ=NA))
 	}			
 	
 	yonemu <- Ay-mu 
 	SigmaSqr <- (t(yonemu)%*%Psinv%*%yonemu)/n
 	if(SigmaSqr < 0){
 		#warning("Maximum Likelihood Estimate of model parameter sigma^2 is negative (During Maximum Likelihood Estimation in buildKriging). Returning penalty. ")
-		return(list(NegLnLike=1e4-SigmaSqr,Psi=NA,Psinv=NA,mu=NA,SSQ=NA))
+		return(list(NegLnLike=penval-SigmaSqr,Psi=NA,Psinv=NA,mu=NA,SSQ=NA))
 	}	
 	
 	NegLnLike <- n*log(SigmaSqr) + LnDetPsi
-  if(is.na(NegLnLike)|is.infinite(NegLnLike))
+  if(is.na(NegLnLike)|is.infinite(NegLnLike)){
     return(list(NegLnLike=1e4,Psi=NA,Psinv=NA,mu=NA,SSQ=NA))
+	}
 	list(NegLnLike=NegLnLike,Psi=Psi,Psinv=Psinv,mu=mu,yonemu=yonemu,ssq=SigmaSqr)
 }
 

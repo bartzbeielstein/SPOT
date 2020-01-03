@@ -4,7 +4,14 @@
 \alias{krigingLikelihood}
 \title{Calculate negative log-likelihood}
 \usage{
-krigingLikelihood(x, AX, Ay, optimizeP = FALSE, useLambda = TRUE)
+krigingLikelihood(
+  x,
+  AX,
+  Ay,
+  optimizeP = FALSE,
+  useLambda = TRUE,
+  penval = 1e+08
+)
 }
 \arguments{
 \item{x}{vector, containing parameters log10(theta), log10(lambda) and p.}
@@ -16,6 +23,8 @@ krigingLikelihood(x, AX, Ay, optimizeP = FALSE, useLambda = TRUE)
 \item{optimizeP}{boolean, whether to optimize parameter p (exponents) or fix at two.}
 
 \item{useLambda}{boolean, whether to use nugget}
+
+\item{penval}{a penalty value which affects the value returned for invalid correlation matrices / configurations}
 }
 \value{
 list with elements\cr
