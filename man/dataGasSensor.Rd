@@ -4,7 +4,8 @@
 \name{dataGasSensor}
 \alias{dataGasSensor}
 \title{Gas Sensor Data}
-\format{A data frame with 280 rows and 20 columns (1 output, 7 input, 2 disturbance, 10 training/test split) :
+\format{
+A data frame with 280 rows and 20 columns (1 output, 7 input, 2 disturbance, 10 training/test split) :
 \describe{
   \item{Y}{Measured Sensor Output}
   \item{X1}{Sensor Input 1}
@@ -30,7 +31,8 @@
 
 Two different modeling tasks are of interest for this data set:
 \code{Y~X1+X2+X3+X4+X5+X6+X7+Batch+Sensor} and
-\code{X1~Y+X7+Batch+Sensor}.}
+\code{X1~Y+X7+Batch+Sensor}.
+}
 \usage{
 dataGasSensor
 }
