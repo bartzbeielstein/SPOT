@@ -43,13 +43,21 @@ simulationSpectral <-function(object,conditionalSimulation=FALSE,Ncos=100){
   if(conditionalSimulation){
     objectSim <- object
     xsim <- objectSim$x
+    #
+    #ysim <- fun(xsim)
     ysim <- object$y-fun(xsim)
+    #
     objectSim$y <- ysim
-    objectSim$yonemu <- ysim - objectSim$mu   
+    #
+    objectSim$yonemu <- ysim #  - objectSim$mu   
+    objectSim$mu <- 0
+    #
     force(objectSim)
     funConditional <- function(xx){
+      #
       #y <- predict(object,xx)$y + fun(xx) - predict(objectSim,xx)$y
       y <- fun(xx) + predict(objectSim,xx)$y
+      #
       return(y)
     }
     return(funConditional)
